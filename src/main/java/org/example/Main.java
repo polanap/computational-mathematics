@@ -1,8 +1,11 @@
 package org.example;
 
 import org.example.equation.Equation;
+import org.example.equation.EquationSystem;
+import org.example.graph.FunctionGraph;
 import org.example.task.Task;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,7 +15,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Equation equantion;
+        Equation equantion = null;
+        EquationSystem equationSystem = null;
         boolean isSystem = true;
         double a;
         double b;
@@ -43,11 +47,11 @@ public class Main {
                 }
                 if (isSystem) {
                     System.out.println("Выберете систему уравнений, решение которой нужно найти: ");
-                    System.out.println(Equation.getAllEquantions());
+                    System.out.println(EquationSystem.getAllEquantions());
                     while (true) {
                         try {
                             command = in.next();
-                            equantion = Equation.getEquationById(command);
+                            equationSystem = EquationSystem.getEquationById(command);
                             break;
                         } catch (Exception e) {
                             System.out.println("Недопустимое значение. Попробуйте снова");
@@ -79,32 +83,75 @@ public class Main {
                     }
                 }
 
-                System.out.println("Введите начальную точку интервала: ");
-                while (true) {
-                    try {
-                        command = in.next();
-                        command = command.replace(',', '.');
-                        a = Double.parseDouble(command);
-                        break;
-                    } catch (Exception e) {
-                        System.out.println("Недопустимое значение. Попробуйте снова");
+                if (!isSystem) {
+                    System.out.println("Введите начальную точку интервала: ");
+                    while (true) {
+                        try {
+                            command = in.next();
+                            command = command.replace(',', '.');
+                            a = Double.parseDouble(command);
+                            break;
+                        } catch (Exception e) {
+                            System.out.println("Недопустимое значение. Попробуйте снова");
+                        }
                     }
-                }
 
-                System.out.println("Введите конечную точку интервала: ");
-                while (true) {
-                    try {
-                        command = in.next();
-                        command = command.replace(',', '.');
-                        b = Double.parseDouble(command);
-                        break;
-                    } catch (Exception e) {
-                        System.out.println("Недопустимое значение. Попробуйте снова");
+                    System.out.println("Введите конечную точку интервала: ");
+                    while (true) {
+                        try {
+                            command = in.next();
+                            command = command.replace(',', '.');
+                            b = Double.parseDouble(command);
+                            break;
+                        } catch (Exception e) {
+                            System.out.println("Недопустимое значение. Попробуйте снова");
+                        }
                     }
+                    Equation finalEquantion = equantion;
+                    double finalA = a;
+                    double finalB = b;
+                    SwingUtilities.invokeLater(() -> {
+                        FunctionGraph example = new FunctionGraph(finalEquantion, finalA, finalB);
+                        example.setSize(800, 600);
+                        example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        example.setLocationRelativeTo(null);
+                        example.setVisible(true);
+                    });
+                } else {
+                    EquationSystem finalEquantion = equationSystem;
+                    SwingUtilities.invokeLater(() -> {
+                        FunctionGraph example = new FunctionGraph(finalEquantion);
+                        example.setSize(800, 600);
+                        example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        example.setLocationRelativeTo(null);
+                        example.setVisible(true);
+                    });
+                    System.out.println("Введите начальное приближение х: ");
+                    while (true) {
+                        try {
+                            command = in.next();
+                            command = command.replace(',', '.');
+                            a = Double.parseDouble(command);
+                            break;
+                        } catch (Exception e) {
+                            System.out.println("Недопустимое значение. Попробуйте снова");
+                        }
+                    }
+
+                    System.out.println("Введите начальное приближение у: ");
+                    while (true) {
+                        try {
+                            command = in.next();
+                            command = command.replace(',', '.');
+                            b = Double.parseDouble(command);
+                            break;
+                        } catch (Exception e) {
+                            System.out.println("Недопустимое значение. Попробуйте снова");
+                        }
+                    }
+
                 }
-
-
-                var task = new Task(a, b, accuracy, equantion);
+                var task = new Task(a, b, accuracy, equantion, equationSystem);
                 task.makeAnswer();
 
 
@@ -139,7 +186,7 @@ public class Main {
                 if (!isSystem){
                     equantion = Equation.getEquationById(command);
                 } else {
-                    equantion = Equation.getEquationById(command);
+                    equationSystem = EquationSystem.getEquationById(command);
                 }
                 accuracy = Double.parseDouble(br.readLine());
                 a = Double.parseDouble(br.readLine());
@@ -154,7 +201,7 @@ public class Main {
                 System.out.println(String.format("На вход переданы некорректные данные: %s", ex.getMessage()));
                 return;
             }
-            var task = new Task(a, b, accuracy, equantion);
+            var task = new Task(a, b, accuracy, equantion, equationSystem);
             task.makeAnswer();
         }
 

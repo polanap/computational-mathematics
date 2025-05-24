@@ -6,34 +6,43 @@ public enum EquationSystem implements EquationSystemInterface {
     EQUATION1 ("1") {
         @Override
         public String toString(){
-            return "x^2 + 2x + 1";
+            return "sin(x+1)-y=1,2 & 2x+cos(y)=2";
         }
 
         @Override
         public double[] calculate(double x, double y) {
-            return new double[2];
+            var ans = new double[2];
+            ans[0] = Math.sin(x+1)-y-1.2;
+            ans[1] = 2*x + Math.cos(y)-2;
+            return ans;
         }
     },
     EQUATION2 ("2"){
         @Override
         public String toString(){
-            return "x^3 + x^2 - 10x + 8";
+            return "sin(x+0,5)-y=1 & cos(y-2)+x=0";
         }
 
         @Override
         public double[] calculate(double x, double y) {
-            return new double[2];
+            var ans = new double[2];
+            ans[0] = Math.sin(x+0.5)-y-1;
+            ans[1] = Math.cos(y-2)+x;
+            return ans;
         }
     },
     EQUATION3 ("3"){
         @Override
         public String toString(){
-            return "";
+            return "sin(x+1)-2y=1,2 & x+cos(y)=2";
         }
 
         @Override
         public double[] calculate(double x, double y) {
-            return new double[2];
+            var ans = new double[2];
+            ans[0] = Math.sin(x+1)-2*y-1.2;
+            ans[1] = x + Math.cos(y)-2;
+            return ans;
         }
     };
 
@@ -43,8 +52,8 @@ public enum EquationSystem implements EquationSystemInterface {
         this.id = id;
     }
 
-    public static Equation getEquationById(String id) {
-        return Arrays.stream(Equation.values())
+    public static EquationSystem getEquationById(String id) {
+        return Arrays.stream(EquationSystem.values())
                 .filter(it -> it.id.equals(id))
                 .findFirst()
                 .orElseThrow();
@@ -53,19 +62,17 @@ public enum EquationSystem implements EquationSystemInterface {
     public static String getAllEquantions() {
         return String.join(
                 "\n",
-                Arrays.stream(Equation.values())
-                        .map(it -> it.id + " " + it.toString())
+                Arrays.stream(EquationSystem.values())
+                        .map(it -> it.id + " " + it)
                         .toList());
     }
 
     public double [][] derivative(double x, double y) {
         double eps = 0.1e-10;
-        double [][] derivatives = new double[2][2];
-        derivatives[0][0] = (this.calculate(x, y)[0]-this.calculate(x-eps, y)[0])/eps;
-        derivatives[0][1] = (this.calculate(x, y)[1]-this.calculate(x-eps, y)[1])/eps;
-        derivatives[1][0] = (this.calculate(x, y)[0]-this.calculate(x, y-eps)[0])/eps;
-        derivatives[1][1] = (this.calculate(x, y)[1]-this.calculate(x, y-eps)[1])/eps;
-        return derivatives;
+        return new double[][]{
+                {(this.calculate(x, y)[0]-this.calculate(x-eps, y)[0])/eps, (this.calculate(x, y)[0]-this.calculate(x, y-eps)[0])/eps},
+                {(this.calculate(x, y)[1]-this.calculate(x-eps, y)[1])/eps, (this.calculate(x, y)[1]-this.calculate(x, y-eps)[1])/eps},
+        };
     }
 
 }
