@@ -9,7 +9,10 @@ public class SecantMethod extends Method {
     }
 
     @Override
-    public double calculate(double a, double b) {
+    public double calculate(double a, double b) throws Exception{
+        if (n >= MAX_ITERATION_COUNT){
+            throw new Exception("Не удалось найти решение за заданное количество итераций");
+        }
         if (n < 2) {
             oldX = b;
             x = a;

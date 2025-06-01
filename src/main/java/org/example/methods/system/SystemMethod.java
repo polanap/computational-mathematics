@@ -9,8 +9,8 @@ public class SystemMethod implements CalculatableSystem {
     double accuracy;
     double x = 0;
     double y = 0;
-    double oldX = 0;
-    double oldY = 0;
+    double deltaX = 0;
+    double deltaY = 0;
     int n = 0;
     int maxN = 100000;
     public SystemMethod(EquationSystem equantion, double accuracy) {
@@ -24,10 +24,10 @@ public class SystemMethod implements CalculatableSystem {
         return system;
     }
 
-    public void printResult(){
+    public String printResult(){
         var function = equantion.calculate(x, y);
-        System.out.println(String.format("Решение системы: (%s, %s), Значение функции в корне: (%s, %s), число итераций: %s, вектор погрешностей: (%s, %s)",
-                x, y, function[0], function[1], n, x-oldX, y-oldY ));
+        return String.format("Решение системы: (%s, %s), \nЗначение функции в корне: (%s, %s), \nчисло итераций: %s, \nвектор погрешностей: (%s, %s)\n",
+                x, y, function[0], function[1], n, deltaX, deltaY );
     }
 }
 

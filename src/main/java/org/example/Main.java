@@ -1,209 +1,242 @@
 package org.example;
 
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import org.example.equation.Equation;
 import org.example.equation.EquationSystem;
-import org.example.graph.FunctionGraph;
 import org.example.task.Task;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.Arrays;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
 
-public class Main {
+public class Main extends Application {
+
+    private Equation equation = null;
+    private EquationSystem equationSystem = null;
 
     public static void main(String[] args) {
+        launch(args);
+    }
 
-        Equation equantion = null;
-        EquationSystem equationSystem = null;
-        boolean isSystem = true;
-        double a;
-        double b;
-        double accuracy;
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Решение уравнений");
 
-        if (args.length == 0) {
-            Scanner in = new Scanner(System.in);
-            boolean notExit = true;
-            String command;
-            while (notExit) {
-                while (true) {
-                    try {
-                        System.out.println("Решить уравнение (1) или систему уравнений (2)?");
-                        command = in.next();
-                        command = command.replaceAll("\s", "");
-                        if (command.equals("1")) {
-                            isSystem = false;
-                            break;
-                        } else if (command.equals("2")){
-                            isSystem = true;
-                            break;
-                        } else {
-                            throw new Exception();
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Не удалось распознать ответ. Введите 1, если хотите найти решение уравнения, или 2, чтобы решить систему");
-                    }
-                }
-                if (isSystem) {
-                    System.out.println("Выберете систему уравнений, решение которой нужно найти: ");
-                    System.out.println(EquationSystem.getAllEquantions());
-                    while (true) {
-                        try {
-                            command = in.next();
-                            equationSystem = EquationSystem.getEquationById(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setHgap(20);
+        grid.setVgap(20);
+        Scene scene = new Scene(grid, 1000, 1000);
+        scene.setFill(Color.LIGHTGRAY);
+
+        GridPane task1Grid = createTaskGrid("Решение уравнения", true, primaryStage);
+        GridPane task2Grid = createTaskGrid("Решение системы уравнений", false, primaryStage);
+
+        grid.add(task1Grid, 0, 0);
+        grid.add(task2Grid, 1, 0);
+
+        GridPane.setMargin(task2Grid, new Insets(0, 0, 0, 20));
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private GridPane createTaskGrid(String title, boolean isSingleEquation, Stage primaryStage) {
+        GridPane taskGrid = new GridPane();
+        taskGrid.setPadding(new Insets(10));
+        taskGrid.setVgap(10);
+        taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
+
+        Label taskLabel = new Label(title);
+        taskLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        Label labelEquation = new Label("Выберите уравнение:");
+        ComboBox<String> equationComboBox = new ComboBox<>();
+        equationComboBox.getItems().addAll(Arrays.stream(isSingleEquation ? Equation.values() : EquationSystem.values()).map(it -> it.toString()).toList());
+
+        Label labelAccuracy = new Label("Введите точность:");
+        TextField accuracyField = new TextField();
+
+        Label labelA = new Label(isSingleEquation ? "Начальная точка (a):" : "Начальное приближение x:");
+        TextField aField = new TextField();
+
+        Label labelB = new Label(isSingleEquation ? "Конечная точка (b):" : "Начальное приближение y:");
+        TextField bField = new TextField();
+
+        Button solveButton = new Button("Решить");
+        solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;");
+        solveButton.setOnMouseEntered(e -> solveButton.setStyle("-fx-background-color: #45a049; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
+        solveButton.setOnMouseExited(e -> solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
+
+        TextArea resultArea = new TextArea();
+        resultArea.setEditable(false);
+        resultArea.setWrapText(true);
+        resultArea.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
+
+        LineChart<Number, Number> lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
+        lineChart.setTitle("График функции");
+        lineChart.setStyle("-fx-background-color: #f0f0f0;");
+        ScatterChart<Number, Number> scatterChart = new ScatterChart<>(new NumberAxis(), new NumberAxis());
+        scatterChart.setTitle("График функции");
+        scatterChart.setStyle("-fx-background-color: #f0f0f0;");
+
+        solveButton.setOnAction(e -> {
+            try {
+                if (isSingleEquation) {
+                    equation = Equation.getEquationByString(equationComboBox.getValue());
+                    double accuracy = Double.parseDouble(accuracyField.getText().replace(',', '.'));
+                    if(accuracy <= 0 || accuracy > 2) {throw new Exception("Недопустимое значение точности");}
+                    double a = Double.parseDouble(aField.getText().replace(',', '.'));
+                    double b = Double.parseDouble(bField.getText().replace(',', '.'));
+
+                    Task task = new Task(a, b, accuracy, equation, equationSystem, false);
+                    String ansText = task.makeAnswer();
+
+                    resultArea.setText(ansText);
+                    plotGraph(lineChart, equation, a, b);
                 } else {
-                    System.out.println("Выберете уравнение, корни которого нужно найти: ");
-                    System.out.println(Equation.getAllEquantions());
-                    while (true) {
-                        try {
-                            command = in.next();
-                            equantion = Equation.getEquationById(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
+                    equationSystem = EquationSystem.getEquationByString(equationComboBox.getValue());
+                    double accuracy = Double.parseDouble(accuracyField.getText().replace(',', '.'));
+                    if(accuracy <= 0 || accuracy > 2) {throw new Exception("Недопустимое значение точности");}
+                    double a = Double.parseDouble(aField.getText().replace(',', '.'));
+                    double b = Double.parseDouble(bField.getText().replace(',', '.'));
+
+                    Task task = new Task(a, b, accuracy, equation, equationSystem, true);
+                    String ansText = task.makeAnswer();
+
+                    resultArea.setText(ansText);
+                    plotGraphSystem(scatterChart, equationSystem, -10, 10, -10, 10);
                 }
+            } catch (Exception ex) {
+                resultArea.setText("Ошибка: " + ex.getMessage());
+            }
+        });
 
-                System.out.println("Введите точность, с которой необходимо получить решение: ");
-                while (true) {
-                    try {
-                        command = in.next();
-                        command = command.replace(',', '.');
-                        accuracy = Double.parseDouble(command);
-                        break;
-                    } catch (Exception e) {
-                        System.out.println("Недопустимое значение. Попробуйте снова");
-                    }
-                }
+        Button saveButton = new Button("Сохранить результат");
+        saveButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;");
+        saveButton.setOnMouseEntered(e -> saveButton.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
+        saveButton.setOnMouseExited(e -> saveButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
 
-                if (!isSystem) {
-                    System.out.println("Введите начальную точку интервала: ");
-                    while (true) {
-                        try {
-                            command = in.next();
-                            command = command.replace(',', '.');
-                            a = Double.parseDouble(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
+        saveButton.setOnAction(e -> {
+            String resultText = resultArea.getText();
+            if (resultText.isEmpty()) {
+                showAlert("Ошибка", "Нет результата для сохранения.");
+                return;
+            }
 
-                    System.out.println("Введите конечную точку интервала: ");
-                    while (true) {
-                        try {
-                            command = in.next();
-                            command = command.replace(',', '.');
-                            b = Double.parseDouble(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
-                    Equation finalEquantion = equantion;
-                    double finalA = a;
-                    double finalB = b;
-                    SwingUtilities.invokeLater(() -> {
-                        FunctionGraph example = new FunctionGraph(finalEquantion, finalA, finalB);
-                        example.setSize(800, 600);
-                        example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                        example.setLocationRelativeTo(null);
-                        example.setVisible(true);
-                    });
-                } else {
-                    EquationSystem finalEquantion = equationSystem;
-                    SwingUtilities.invokeLater(() -> {
-                        FunctionGraph example = new FunctionGraph(finalEquantion);
-                        example.setSize(800, 600);
-                        example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                        example.setLocationRelativeTo(null);
-                        example.setVisible(true);
-                    });
-                    System.out.println("Введите начальное приближение х: ");
-                    while (true) {
-                        try {
-                            command = in.next();
-                            command = command.replace(',', '.');
-                            a = Double.parseDouble(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Сохранить результат");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Текстовые файлы (*.txt)", "*.txt"));
+            File file = fileChooser.showSaveDialog(primaryStage);
 
-                    System.out.println("Введите начальное приближение у: ");
-                    while (true) {
-                        try {
-                            command = in.next();
-                            command = command.replace(',', '.');
-                            b = Double.parseDouble(command);
-                            break;
-                        } catch (Exception e) {
-                            System.out.println("Недопустимое значение. Попробуйте снова");
-                        }
-                    }
-
-                }
-                var task = new Task(a, b, accuracy, equantion, equationSystem);
-                task.makeAnswer();
-
-
-                while (true) {
-                    try {
-                        System.out.println("Хотите продолжить? (+/-)");
-                        command = in.next();
-                        command = command.replaceAll("\s", "");
-                        if (command.equals("+")) {
-                            break;
-                        } else if (command.equals("-")){
-                            notExit = false;
-                            break;
-                        } else {
-                            throw new Exception();
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Не удалось распознать ответ. Введите +/-");
-                    }
+            if (file != null) {
+                try (FileWriter writer = new FileWriter(file)) {
+                    writer.write(resultText);
+                    showAlert("Успех", "Результат успешно сохранен в файл: " + file.getAbsolutePath());
+                } catch (IOException ex) {
+                    showAlert("Ошибка", "Не удалось сохранить файл: " + ex.getMessage());
                 }
             }
-            in.close();
+        });
+
+        taskGrid.add(taskLabel, 0, 0, 2, 1);
+        taskGrid.add(labelEquation, 0, 1);
+        taskGrid.add(equationComboBox, 1, 1);
+        taskGrid.add(labelAccuracy, 0, 2);
+        taskGrid.add(accuracyField, 1, 2);
+        taskGrid.add(labelA, 0, 3);
+        taskGrid.add(aField, 1, 3);
+        taskGrid.add(labelB, 0, 4);
+        taskGrid.add(bField, 1, 4);
+        taskGrid.add(solveButton, 0, 5);
+        taskGrid.add(resultArea, 0, 6, 2, 1);
+        taskGrid.add(saveButton, 1, 5);
+        if (isSingleEquation) {
+            taskGrid.add(lineChart, 0, 7, 2, 1);
         } else {
-            try (BufferedReader br = new BufferedReader(new FileReader(args[0]))) {
-                String [] line;
-                String command = br.readLine().replaceAll("\s", "");
-                if (command.equals("1")) {
-                    isSystem = false;
-                } else if (command.equals("2")) {
-                    isSystem = true;
-                }
-                if (!isSystem){
-                    equantion = Equation.getEquationById(command);
-                } else {
-                    equationSystem = EquationSystem.getEquationById(command);
-                }
-                accuracy = Double.parseDouble(br.readLine());
-                a = Double.parseDouble(br.readLine());
-                b = Double.parseDouble(br.readLine());
-
-            }
-            catch(IOException ex){
-                System.out.println(String.format("При попытке чтения из файла произошла ошибка: %s", ex.getMessage()));
-                return;
-            }
-            catch(NumberFormatException ex){
-                System.out.println(String.format("На вход переданы некорректные данные: %s", ex.getMessage()));
-                return;
-            }
-            var task = new Task(a, b, accuracy, equantion, equationSystem);
-            task.makeAnswer();
+            taskGrid.add(scatterChart, 0, 7, 2, 1);
         }
 
+        return taskGrid;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void plotGraph(LineChart<Number, Number> lineChart, Equation equation, double a, double b) {
+        lineChart.getData().clear();
+
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName("График уравнения");
+
+        double step = (b-a)/100;
+        for (double x = a; x <= b; x += step) {
+            double y = equation.calculate(x);
+            XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
+            Circle point = new Circle(1);
+            point.setFill(Color.ORANGE);
+            dataPoint.setNode(point);
+            dataPoint.setNode(point);
+            series.getData().add(dataPoint);
+        }
+
+        lineChart.getData().add(series);
+    }
+
+    private void plotGraphSystem(ScatterChart<Number, Number> scatterChart, EquationSystem equationSystem, double xMin, double xMax, double yMin, double yMax) {
+        scatterChart.getData().clear();
+
+        XYChart.Series<Number, Number> series1 = new XYChart.Series<>();
+        series1.setName("Уравнение 1");
+
+        XYChart.Series<Number, Number> series2 = new XYChart.Series<>();
+        series2.setName("Уравнение 2");
+
+        double stepX = 0.03;
+        double stepY = 0.03;
+
+        for (double x = xMin; x <= xMax; x += stepX) {
+            for (double y = yMin; y <= yMax; y += stepY) {
+                double[] results = equationSystem.calculate(x, y);
+                if (Math.abs(results[0]) < 0.1) {
+                    XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
+                    Circle point = new Circle(1);
+                    point.setFill(Color.BLUE);
+                    dataPoint.setNode(point);
+                    series1.getData().add(dataPoint);
+                }
+
+                if (Math.abs(results[1]) < 0.1) {
+                    XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
+                    Circle point = new Circle(1);
+                    point.setFill(Color.RED);
+                    dataPoint.setNode(point);
+                    series2.getData().add(dataPoint);
+                }
+            }
+        }
+
+        scatterChart.getData().addAll(series1, series2);
     }
 }

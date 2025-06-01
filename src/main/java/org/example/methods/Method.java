@@ -8,6 +8,7 @@ public class Method implements Calculatable {
     double x = 0;
     double oldX = 0;
     int n = 0;
+    int MAX_ITERATION_COUNT = 1000;
 
     public Method(Equation equantion, double accuracy) {
         this.equantion = equantion;
@@ -15,12 +16,12 @@ public class Method implements Calculatable {
     }
 
     @Override
-    public double calculate(double a, double b) {
+    public double calculate(double a, double b) throws Exception  {
         return 0;
     }
 
-    public void printResult(){
-        System.out.println(String.format("Значение корня: %s, Значение функции в корне: %s, число итераций: %s",
-                x, equantion.calculate(x), n));
+    public String printResult(){
+        return String.format("Значение корня: %s, Значение функции в корне: %s, число итераций: %s \n",
+                x, equantion.calculate(x), n);
     }
 }

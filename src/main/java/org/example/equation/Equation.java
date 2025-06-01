@@ -6,12 +6,12 @@ public enum Equation implements EquationInterface {
     EQUATION1 ("1") {
         @Override
         public String toString(){
-            return "x^2 + 2x + 1 = 0";
+            return "x^3 + 1 = 0";
         }
 
         @Override
         public double calculate(double x) {
-            return x*x + 2*x + 1;
+            return x*x*x + 1;
         }
     },
     EQUATION2 ("2"){
@@ -35,6 +35,17 @@ public enum Equation implements EquationInterface {
         public double calculate(double x) {
             return x*x*x - 3.125*x*x - 3.5*x +2.458;
         }
+    },
+    EQUATION4 ("4"){
+        @Override
+        public String toString(){
+            return "0,1*cos(x)=0";
+        }
+
+        @Override
+        public double calculate(double x) {
+            return 0.1 * Math.cos(x);
+        }
     };
 
     String id;
@@ -46,6 +57,13 @@ public enum Equation implements EquationInterface {
     public static Equation getEquationById(String id) {
         return Arrays.stream(Equation.values())
                 .filter(it -> it.id.equals(id))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public static Equation getEquationByString(String value) {
+        return Arrays.stream(Equation.values())
+                .filter(it -> it.toString().equals(value))
                 .findFirst()
                 .orElseThrow();
     }

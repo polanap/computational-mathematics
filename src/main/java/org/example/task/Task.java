@@ -21,7 +21,7 @@ public class Task {
     NewtonMethod newtonMethod;
 
 
-    public Task(double a, double b, double accuracy, Equation equantion, EquationSystem equationSystem) {
+    public Task(double a, double b, double accuracy, Equation equantion, EquationSystem equationSystem, boolean isSystem) {
         this.a = a;
         this.b = b;
         this.accuracy = accuracy;
@@ -31,63 +31,70 @@ public class Task {
         this.secantMethod = new SecantMethod(equantion, accuracy);
         this.simpleIterationMethod = new SimpleIterationMethod(equantion, accuracy);
         this.newtonMethod = new NewtonMethod(equationSystem, accuracy);
-        if (equantion == null ) {
-            isSystem = true;
-        }
+        this.isSystem = isSystem;
     }
 
-    public void makeAnswer(){
+    public String makeAnswer(){
+        String ans = "";
         if (!isSystem){
             try {
-                System.out.println("Проверка интервала на наличие корней...");
+                ans+="Проверка интервала на наличие корней...\n";
                 switch (countRoots()){
                     case 0:
-                        System.out.println("На заданном интервале нет корней");
-                        throw new Exception();
+                        ans+="На заданном интервале нет корней\n";
+                        throw new Exception("Невозможно найти ответ, так как на заданном интервале нет корней");
                     case 1:
-                        System.out.println("На заданном интервале найден 1 корень");
+                        ans+="На заданном интервале найден 1 корень\n";
                         break;
                     default:
-                        System.out.println("На заданном интервале найдено более 1 корня");
-                        throw new Exception();
+                        ans+="На заданном интервале найдено более 1 корня\n";
+                        throw new Exception("Невозможно найти ответ, так как на заданном интервале найдено более 1 корня");
                 }
-                System.out.println("Вычисление корня методом хорд:");
-                chordMethod.calculate(a, b);
-                chordMethod.printResult();
-                System.out.println("Вычисление корня методом секущих:");
-                secantMethod.calculate(a, b);
-                secantMethod.printResult();
-                System.out.println("Вычисление корня методом простой итерации:");
-                System.out.println("Проверка достаточного условия сходимости на интервале...");
+                ans+="Вычисление корня методом хорд:\n";
+                try {
+                    chordMethod.calculate(a, b);
+                    ans+=chordMethod.printResult();
+                }catch (Exception e){
+                    ans+=e.getMessage()+'\n';
+                }
+                try {
+                    ans += "Вычисление корня методом секущих:\n";
+                    secantMethod.calculate(a, b);
+                    ans+=secantMethod.printResult();
+                }catch (Exception e){
+                    ans+=e.getMessage()+'\n';
+                }
+                ans+="Вычисление корня методом простой итерации:\n";
+                ans+="Проверка достаточного условия сходимости на интервале...\n";
                 if (simpleIterationMethod.isConverged(a, b)) {
-                    System.out.println("Алгоритм сходится");
+                    ans+="Алгоритм сходится\n";
                     simpleIterationMethod.calculate(a, b);
-                    simpleIterationMethod.printResult();
+                    ans+=simpleIterationMethod.printResult();
                 } else {
-                    System.out.println("Алгоритм не сходится -- ответ получить не удастся");
+                    ans+="Алгоритм не сходится -- ответ получить не удастся\n";
                 }
             } catch (Exception e){
-                System.out.println("Не удалось посчитать корень");
-                System.out.println(e);
+                ans+="Не удалось посчитать корень\n";
+                ans+=e.getMessage()+'\n';
             }
         } else {
-            System.out.println("Вычисление решения системы...");
+            ans+="Вычисление решения системы...\n";
             try {
                 newtonMethod.calculate(a, b);
-                newtonMethod.printResult();
+                ans+=newtonMethod.printResult();
             } catch (Exception e){
-                System.out.println("Не удалось посчитать корень");
-                System.out.println(e.getMessage());
+                ans+="Не удалось посчитать корень\n";
+                ans+=e.getMessage()+'\n';
             }
         }
-
+        return ans;
     }
 
     public int countRoots() {
         int roots = 0;
         double previous = a;
         double current = a + accuracy;
-        if (previous == 0) roots += 1;
+        if (equantion.calculate(previous) == 0) roots += 1;
         while (current <= b) {
             if (equantion.calculate(previous) * equantion.calculate(current) < 0 || equantion.calculate(current) == 0)
                 roots += 1;

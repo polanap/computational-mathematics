@@ -9,7 +9,10 @@ public class ChordMethod extends Method {
     }
 
     @Override
-    public double calculate(double a, double b) {
+    public double calculate(double a, double b) throws Exception {
+        if (n >= MAX_ITERATION_COUNT){
+            throw new Exception("Не удалось найти решение за заданное количество итераций");
+        }
         x = a - (b - a)*equantion.calculate(a)/ (equantion.calculate(b) - equantion.calculate(a));
         if (Math.abs(equantion.calculate(x)) <= accuracy) {
             return x;

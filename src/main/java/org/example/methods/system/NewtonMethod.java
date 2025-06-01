@@ -8,17 +8,23 @@ public class NewtonMethod extends SystemMethod {
     }
 
     @Override
-    public double[] calculate(double x0, double y0) throws Exception{
-        double x = x0;
-        double y = y0;
+    public double[] calculate(double x0, double y0) throws Exception {
+        x = x0;
+        y = y0;
 
         for (int i = 0; i < maxN; i++) {
+            n = i;
             double[][] J = equantion.derivative(x, y);
             double f1 = equantion.calculate(x, y)[0];
             double f2 = equantion.calculate(x, y)[1];
 
-            double deltaX = -(J[0][0] * f1 + J[0][1] * f2) / (J[0][0] * J[1][1] - J[0][1] * J[1][0]);
-            double deltaY = -(J[1][0] * f1 + J[1][1] * f2) / (J[0][0] * J[1][1] - J[0][1] * J[1][0]);
+            double determinant = J[0][0] * J[1][1] - J[0][1] * J[1][0];
+            if (Math.abs(determinant) < 1e-10) {
+                throw new Exception("Матрица Якоби вырождена, метод Ньютона не может быть применен.");
+            }
+
+            deltaX = (J[0][1] * f2 - J[1][1] * f1) / determinant;
+            deltaY = (J[1][0] * f1 - J[0][0] * f2) / determinant;
 
             x += deltaX;
             y += deltaY;

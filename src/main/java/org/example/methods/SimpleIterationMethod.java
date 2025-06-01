@@ -13,7 +13,10 @@ public class SimpleIterationMethod extends Method {
     }
 
     @Override
-    public double calculate(double a, double b) {
+    public double calculate(double a, double b) throws Exception {
+        if (n >= MAX_ITERATION_COUNT){
+            throw new Exception("Не удалось найти решение за заданное количество итераций");
+        }
         if (n == 0) {
             q = getConvergesCoefficient(a, b);
             lambda = getLambda(a, b);
@@ -21,13 +24,10 @@ public class SimpleIterationMethod extends Method {
         n += 1;
         oldX = x;
         x = x + lambda * equantion.calculate(x);
-        if (0 < q && q <= 0.5 && Math.abs(x - oldX) <= accuracy){
-            return x;
-        } else if (0.5 < q && q < 1 && Math.abs(x - oldX) < (1-q)*accuracy/q) {
+        if (Math.abs(x - oldX) <= accuracy) {
             return x;
         }
         return calculate(a, x);
-
     }
 
     private double getLambda(double a, double b) {
@@ -51,7 +51,7 @@ public class SimpleIterationMethod extends Method {
     }
 
     public boolean isConverged(double a, double b) {
-        System.out.println(getConvergesCoefficient(a, b));
+//        System.out.println(getConvergesCoefficient(a, b));
         return getConvergesCoefficient(a, b) < 1;
     }
 }
