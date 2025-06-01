@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import org.example.equation.Equation;
-import org.example.equation.EquationSystem;
+import org.example.methods.MethodType;
 import org.example.task.Task;
 
 import java.io.File;
@@ -28,7 +28,7 @@ import javafx.geometry.Insets;
 public class Main extends Application {
 
     private Equation equation = null;
-    private EquationSystem equationSystem = null;
+    private MethodType method = null;
 
     public static void main(String[] args) {
         launch(args);
@@ -36,28 +36,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Решение уравнений");
+        primaryStage.setTitle("Вычисление интеграла");
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(20));
         grid.setHgap(20);
         grid.setVgap(20);
-        Scene scene = new Scene(grid, 1000, 1000);
+        Scene scene = new Scene(grid, 600, 1000);
         scene.setFill(Color.LIGHTGRAY);
 
-        GridPane task1Grid = createTaskGrid("Решение уравнения", true, primaryStage);
-        GridPane task2Grid = createTaskGrid("Решение системы уравнений", false, primaryStage);
+        GridPane task1Grid = createTaskGrid("Вычисление интеграла",  primaryStage);
 
         grid.add(task1Grid, 0, 0);
-        grid.add(task2Grid, 1, 0);
-
-        GridPane.setMargin(task2Grid, new Insets(0, 0, 0, 20));
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private GridPane createTaskGrid(String title, boolean isSingleEquation, Stage primaryStage) {
+    private GridPane createTaskGrid(String title, Stage primaryStage) {
         GridPane taskGrid = new GridPane();
         taskGrid.setPadding(new Insets(10));
         taskGrid.setVgap(10);
@@ -68,16 +64,20 @@ public class Main extends Application {
 
         Label labelEquation = new Label("Выберите уравнение:");
         ComboBox<String> equationComboBox = new ComboBox<>();
-        equationComboBox.getItems().addAll(Arrays.stream(isSingleEquation ? Equation.values() : EquationSystem.values()).map(it -> it.toString()).toList());
+        equationComboBox.getItems().addAll(Arrays.stream(Equation.values()).map(it -> it.toString()).toList());
 
         Label labelAccuracy = new Label("Введите точность:");
         TextField accuracyField = new TextField();
 
-        Label labelA = new Label(isSingleEquation ? "Начальная точка (a):" : "Начальное приближение x:");
+        Label labelA = new Label("Начальная точка интервала:");
         TextField aField = new TextField();
 
-        Label labelB = new Label(isSingleEquation ? "Конечная точка (b):" : "Начальное приближение y:");
+        Label labelB = new Label("Конечная точка интервала:");
         TextField bField = new TextField();
+
+        Label labelMethod = new Label("Выберите метод:");
+        ComboBox<String> methodComboBox = new ComboBox<>();
+        methodComboBox.getItems().addAll(Arrays.stream(MethodType.values()).map(it -> it.toString()).toList());
 
         Button solveButton = new Button("Решить");
         solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;");
@@ -98,31 +98,19 @@ public class Main extends Application {
 
         solveButton.setOnAction(e -> {
             try {
-                if (isSingleEquation) {
-                    equation = Equation.getEquationByString(equationComboBox.getValue());
-                    double accuracy = Double.parseDouble(accuracyField.getText().replace(',', '.'));
-                    if(accuracy <= 0 || accuracy > 2) {throw new Exception("Недопустимое значение точности");}
-                    double a = Double.parseDouble(aField.getText().replace(',', '.'));
-                    double b = Double.parseDouble(bField.getText().replace(',', '.'));
+                equation = Equation.getEquationByString(equationComboBox.getValue());
+                double accuracy = Double.parseDouble(accuracyField.getText().replace(',', '.'));
+                if(accuracy <= 0 || accuracy > 2) {throw new Exception("Недопустимое значение точности");}
+                double a = Double.parseDouble(aField.getText().replace(',', '.'));
+                double b = Double.parseDouble(bField.getText().replace(',', '.'));
+                method = MethodType.getMethodByString(methodComboBox.getValue());
 
-                    Task task = new Task(a, b, accuracy, equation, equationSystem, false);
-                    String ansText = task.makeAnswer();
+                Task task = new Task(a, b, accuracy, equation, method);
+                String ansText = task.makeAnswer();
 
-                    resultArea.setText(ansText);
-                    plotGraph(lineChart, equation, a, b);
-                } else {
-                    equationSystem = EquationSystem.getEquationByString(equationComboBox.getValue());
-                    double accuracy = Double.parseDouble(accuracyField.getText().replace(',', '.'));
-                    if(accuracy <= 0 || accuracy > 2) {throw new Exception("Недопустимое значение точности");}
-                    double a = Double.parseDouble(aField.getText().replace(',', '.'));
-                    double b = Double.parseDouble(bField.getText().replace(',', '.'));
+                resultArea.setText(ansText);
+                plotGraph(lineChart, equation, a, b);
 
-                    Task task = new Task(a, b, accuracy, equation, equationSystem, true);
-                    String ansText = task.makeAnswer();
-
-                    resultArea.setText(ansText);
-                    plotGraphSystem(scatterChart, equationSystem, -10, 10, -10, 10);
-                }
             } catch (Exception ex) {
                 resultArea.setText("Ошибка: " + ex.getMessage());
             }
@@ -164,14 +152,13 @@ public class Main extends Application {
         taskGrid.add(aField, 1, 3);
         taskGrid.add(labelB, 0, 4);
         taskGrid.add(bField, 1, 4);
-        taskGrid.add(solveButton, 0, 5);
-        taskGrid.add(resultArea, 0, 6, 2, 1);
-        taskGrid.add(saveButton, 1, 5);
-        if (isSingleEquation) {
-            taskGrid.add(lineChart, 0, 7, 2, 1);
-        } else {
-            taskGrid.add(scatterChart, 0, 7, 2, 1);
-        }
+        taskGrid.add(labelMethod, 0, 5);
+        taskGrid.add(methodComboBox, 1, 5);
+        taskGrid.add(solveButton, 0, 6);
+        taskGrid.add(saveButton, 1, 6);
+        taskGrid.add(resultArea, 0, 7, 2, 1);
+        taskGrid.add(lineChart, 0, 8, 2, 1);
+
 
         return taskGrid;
     }
@@ -190,8 +177,11 @@ public class Main extends Application {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName("График уравнения");
 
-        double step = (b-a)/100;
-        for (double x = a; x <= b; x += step) {
+        double left = Math.min(a, b);
+        double right = Math.max(a, b);
+
+        double step = (right-left)/100;
+        for (double x = left; x <= right; x += step) {
             double y = equation.calculate(x);
             XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
             Circle point = new Circle(1);
@@ -202,41 +192,5 @@ public class Main extends Application {
         }
 
         lineChart.getData().add(series);
-    }
-
-    private void plotGraphSystem(ScatterChart<Number, Number> scatterChart, EquationSystem equationSystem, double xMin, double xMax, double yMin, double yMax) {
-        scatterChart.getData().clear();
-
-        XYChart.Series<Number, Number> series1 = new XYChart.Series<>();
-        series1.setName("Уравнение 1");
-
-        XYChart.Series<Number, Number> series2 = new XYChart.Series<>();
-        series2.setName("Уравнение 2");
-
-        double stepX = 0.03;
-        double stepY = 0.03;
-
-        for (double x = xMin; x <= xMax; x += stepX) {
-            for (double y = yMin; y <= yMax; y += stepY) {
-                double[] results = equationSystem.calculate(x, y);
-                if (Math.abs(results[0]) < 0.1) {
-                    XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
-                    Circle point = new Circle(1);
-                    point.setFill(Color.BLUE);
-                    dataPoint.setNode(point);
-                    series1.getData().add(dataPoint);
-                }
-
-                if (Math.abs(results[1]) < 0.1) {
-                    XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x, y);
-                    Circle point = new Circle(1);
-                    point.setFill(Color.RED);
-                    dataPoint.setNode(point);
-                    series2.getData().add(dataPoint);
-                }
-            }
-        }
-
-        scatterChart.getData().addAll(series1, series2);
     }
 }
