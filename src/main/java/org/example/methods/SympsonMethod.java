@@ -33,8 +33,7 @@ public class SympsonMethod extends Method{
         return sum;
     }
 
-    @Override
-    public double getCurrentAccuracy(){
+    public double runge(){
         return Math.abs(sum - previousSum)/15;
     }
 }

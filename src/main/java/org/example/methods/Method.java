@@ -2,7 +2,7 @@ package org.example.methods;
 
 import org.example.equation.Equation;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,16 +20,32 @@ public class Method implements Calculatable {
         this.accuracy = accuracy;
     }
 
+    public double runge(){
+        return Math.abs(sum - previousSum);
+    }
+
     @Override
     public double calculate(double a, double b) throws Exception  {
         return sum;
     }
 
     public String printResult(){
-        return String.format("Значение интеграла: %s, число разбиения интервала: %s \n", sum, n);
+        String[] parts = String.valueOf(accuracy).split("\\.");
+        int signCount = parts.length > 1 ? parts[1].length() : 0;
+
+        // Форматируем число для вывода
+        StringBuilder format = new StringBuilder("#.");
+        for (int i = 0; i < signCount; i++) {
+            format.append("#");
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat(format.toString());
+        String newNum = decimalFormat.format(sum);
+        return String.format("Значение интеграла: %s, число разбиения интервала: %s \n", newNum, n);
     }
 
     public double getCurrentAccuracy(){
-        return Math.abs(sum - previousSum)/3;
+        return runge();
     }
+
 }

@@ -22,10 +22,10 @@ public class RectangleMethod extends Method{
         int currentN = 0;
         n = 2;
         do {
-            n*=2;
             if (currentN >= MAX_ITERATION_COUNT){
                 throw new Exception("Не удалось посчитать интеграл с заданной точностью");
             }
+            n*=2;
             currentN++;
 
             double left = Math.min(a, b);
@@ -49,6 +49,10 @@ public class RectangleMethod extends Method{
             sum *= step * reverseMul;
         } while (getCurrentAccuracy() > accuracy);
         return sum;
+    }
+
+    public double runge(){
+        return Math.abs(sum - previousSum)/3;
     }
 }
 

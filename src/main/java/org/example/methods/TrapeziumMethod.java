@@ -32,4 +32,7 @@ public class TrapeziumMethod extends Method{
         } while (getCurrentAccuracy() > accuracy);
         return sum;
     }
+    public double runge(){
+        return Math.abs(sum - previousSum)/3;
+    }
 }

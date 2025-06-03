@@ -62,7 +62,7 @@ public class Main extends Application {
         Label taskLabel = new Label(title);
         taskLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        Label labelEquation = new Label("Выберите уравнение:");
+        Label labelEquation = new Label("Выберите функцию:");
         ComboBox<String> equationComboBox = new ComboBox<>();
         equationComboBox.getItems().addAll(Arrays.stream(Equation.values()).map(it -> it.toString()).toList());
 

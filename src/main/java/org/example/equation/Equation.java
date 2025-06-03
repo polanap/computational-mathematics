@@ -6,7 +6,7 @@ public enum Equation implements EquationInterface {
     EQUATION1 {
         @Override
         public String toString(){
-            return "x^3 + 1 = 0";
+            return "x^3 + 1";
         }
 
         @Override
@@ -17,7 +17,7 @@ public enum Equation implements EquationInterface {
     EQUATION2 {
         @Override
         public String toString(){
-            return "x^3 + x^2 - 10x + 8 = 0";
+            return "x^3 + x^2 - 10x + 8";
         }
 
         @Override
@@ -28,7 +28,7 @@ public enum Equation implements EquationInterface {
     EQUATION3 {
         @Override
         public String toString(){
-            return "x^3 - 3,125x^2 - 3,5x + 2,458 = 0";
+            return "x^3 - 3,125x^2 - 3,5x + 2,458";
         }
 
         @Override
@@ -39,7 +39,7 @@ public enum Equation implements EquationInterface {
     EQUATION4 {
         @Override
         public String toString(){
-            return "0,1*cos(x)=0";
+            return "0,1*cos(x)";
         }
 
         @Override
