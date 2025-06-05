@@ -11,7 +11,7 @@ public class Method implements Calculatable {
     double accuracy;
     double sum = 0;
     int n = 4;
-    int MAX_ITERATION_COUNT = 1000;
+    int MAX_ITERATION_COUNT = 28;
     double previousSum = 0;
     Map<Integer, Double> previousSumMap = new HashMap<Integer, Double>();
 
