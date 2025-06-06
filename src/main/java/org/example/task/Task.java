@@ -1,34 +1,30 @@
 package org.example.task;
 
-import org.example.equation.Equation;
-import org.example.methods.*;
+import javafx.scene.chart.LineChart;
+import org.example.approximation.LinearApproximation;
 
 public class Task {
-    Equation equantion;
-    double a;
-    double b;
-    double accuracy;
-    MethodType methodType;
-    Method method;
+    double [] x;
+    double [] y;
+    LineChart<Number, Number> lineChart;
 
 
-    public Task(double a, double b, double accuracy, Equation equantion, MethodType methodType) {
-        this.a = a;
-        this.b = b;
-        this.accuracy = accuracy;
-        this.equantion = equantion;
-        this.methodType = methodType;
-        method = MethodGenerator.createMethod(equantion, accuracy, methodType);
+    public Task(double [] x, double [] y, LineChart<Number, Number> lineChart) {
+        this.x = x;
+        this.y = y;
+        this.lineChart = lineChart;
     }
 
     public String makeAnswer(){
+        lineChart.getData().clear();
         String ans = "";
-        ans+="Вычисление интеграла...\n";
+        ans+="Получение аппроксимирующей функции...\n";
         try {
-            method.calculate(a, b);
-            ans+= method.printResult();
+            LinearApproximation linear = new LinearApproximation(x, y);
+            ans+=linear.getStringAnswer();
+            linear.plotGraph(lineChart);
         } catch (Exception e){
-            ans+="Не удалось посчитать интеграл\n";
+            ans+="Не удалось посчитать\n";
             ans+=e.getMessage()+'\n';
         }
         return ans;
