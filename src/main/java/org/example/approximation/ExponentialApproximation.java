@@ -16,7 +16,7 @@ public class ExponentialApproximation extends Approximation {
         this.x = x;
         this.y = y;
         n = x.length;
-        if (Arrays.stream(y).min().getAsDouble()<0) throw new Exception("значения у не может быть < 0");
+        if (Arrays.stream(y).min().getAsDouble()<=0) throw new Exception("значения у не может быть <= 0");
         calculateCoefficients();
         createDeviation();
     }

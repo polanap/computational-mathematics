@@ -43,11 +43,38 @@ public class ThirdDegreePolynomialApproximation extends Approximation {
         double sx3y = IntStream.range(0, n)
                 .mapToDouble(i->x[i]*x[i]*x[i]*y[i])
                 .sum();
-        double det = sx6*sx4*sx2*n + sx5*sx3*sx*sx3 + sx4*sx2*sx4*sx2 + sx3*sx5*sx3*sx - sx3*sx3*sx3*sx3 - sx2*sx2*sx2*sx6 - sx*sx*sx5*sx5 - n*sx4*sx4*sx4;
-        double det1 = sx3y*sx4*sx2*n + sx5*sx3*sx*sy + sx4*sx2*sxy*sx2 + sx3*sx2y*sx3*sx - sy*sx3*sx3*sx3 - sx2*sx2*sx2*sx3y - sx*sx*sx2y*sx5 - n*sxy*sx4*sx4;
-        double det2 = sx6*sx2y*sx2*n + sx3y*sx3*sx*sx3 + sx4*sx2*sx4*sy + sx3*sx5*sxy*sx - sx3*sxy*sx3*sx3 - sy*sx2*sx2*sx6 - sx*sx*sx5*sx3y - n*sx4*sx2y*sx4;
-        double det3 = sx6*sx4*sxy*n + sx5*sx2y*sx*sx3 + sx3y*sx2*sx4*sx2 + sx3*sx5*sx3*sy - sx3*sx3*sx2y*sx3 - sx2*sxy*sx2*sx6 - sy*sx*sx5*sx5 - n*sx4*sx4*sx3y;
-        double det4 = sx6*sx4*sx2*sy + sx5*sx3*sxy*sx3 + sx4*sx2y*sx4*sx2 + sx3y*sx5*sx3*sx - sx3*sx3*sx3*sx3y - sx2*sx2*sx2y*sx6 - sx*sxy*sx5*sx5 - sy*sx4*sx4*sx4;
+        double [][] A = {
+                {sx6, sx5, sx4, sx3},
+                {sx5, sx4, sx3, sx2},
+                {sx4, sx3, sx2, sx},
+                {sx3, sx2, sx, n}
+        };
+        double [] B = {sx3y, sx2y, sxy, sy};
+        double det = det4degree(A);
+        double det1 = det4degree(new double[][]{
+                {B[0], A[0][1], A[0][2], A[0][3]},
+                {B[1], A[1][1], A[1][2], A[1][3]},
+                {B[2], A[2][1], A[2][2], A[2][3]},
+                {B[3], A[3][1], A[3][2], A[3][3]}
+        });
+        double det2 = det4degree(new double[][]{
+                {A[0][0], B[0], A[0][2], A[0][3]},
+                {A[1][0], B[1], A[1][2], A[1][3]},
+                {A[2][0], B[2], A[2][2], A[2][3]},
+                {A[3][0], B[3], A[3][2], A[3][3]}
+        });
+        double det3 = det4degree(new double[][]{
+                {A[0][0], A[0][1], B[0], A[0][3]},
+                {A[1][0], A[1][1], B[1], A[1][3]},
+                {A[2][0], A[2][1], B[2], A[2][3]},
+                {A[3][0], A[3][1], B[3], A[3][3]}
+        });
+        double det4 = det4degree(new double[][]{
+                {A[0][0], A[0][1], A[0][2], B[0]},
+                {A[1][0], A[1][1], A[1][2], B[1]},
+                {A[2][0], A[2][1], A[2][2], B[2]},
+                {A[3][0], A[3][1], A[3][2], B[3]}
+        });
         a = det1 / det;
         b = det2 / det;
         c = det3 / det;

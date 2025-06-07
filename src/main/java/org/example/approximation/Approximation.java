@@ -24,7 +24,7 @@ public abstract class Approximation implements Graphical{
     double [] e;
     int n;
 
-    final double overX = 3;
+    final double overX = 1;
     Color graphColor;
 
     public double getStandardDeviation(){
@@ -121,5 +121,31 @@ public abstract class Approximation implements Graphical{
             }
             return list;
         }
+    }
+
+    static double det3degree(double[][] m) {
+        return m[0][0] * m[1][1] * m[2][2]
+                + m[0][1] * m[1][2] * m[2][0]
+                + m[0][2] * m[1][0] * m[2][1]
+                - m[0][2] * m[1][1] * m[2][0]
+                - m[0][1] * m[1][0] * m[2][2]
+                - m[0][0] * m[1][2] * m[2][1];
+    }
+
+    static double det4degree(double[][] m) {
+        double res = 0;
+        for (int c = 0; c < 4; c++) {
+            double[][] minor = new double[3][3];
+            for (int i = 1; i < 4; i++) {
+                int mi = i - 1;
+                int mj = 0;
+                for (int j = 0; j < 4; j++) {
+                    if (j == c) continue;
+                    minor[mi][mj++] = m[i][j];
+                }
+            }
+            res += ((c % 2) == 0 ? 1 : -1) * m[0][c] * det3degree(minor);
+        }
+        return res;
     }
 }

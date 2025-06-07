@@ -61,3 +61,6 @@ public class SecondDegreePolynomialApproximation extends Approximation {
                 toString(), super.getStringAnswer());
     }
 }
+
+//0.000, 0.400, 0.800, 1.200, 1.600, 2.000, 2.400, 2.800, 3.200, 3.600, 4.000
+//0.000, 0.718, 1.383, 1.789, 1.740, 1.385, 1.001, 0.705, 0.501, 0.364, 0.271

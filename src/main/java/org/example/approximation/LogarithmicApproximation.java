@@ -16,7 +16,7 @@ public class LogarithmicApproximation extends Approximation {
         this.x = x;
         this.y = y;
         n = x.length;
-        if (Arrays.stream(x).min().getAsDouble()<0) throw new Exception("значения x не может быть < 0");
+        if (Arrays.stream(x).min().getAsDouble()<=0) throw new Exception("значения x не может быть <= 0");
         calculateCoefficients();
         createDeviation();
     }
