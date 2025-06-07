@@ -2,6 +2,7 @@ package org.example.approximation;
 
 import javafx.scene.paint.Color;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -22,7 +23,7 @@ public class LinearApproximation extends Approximation {
         double sxx = Arrays.stream(x)
                 .map(x->x*x)
                 .sum();
-        double sxy = IntStream.range(0, x.length)
+        double sxy = IntStream.range(0, n)
                 .mapToDouble(i->x[i]*y[i])
                 .sum();
         double delta = sxx * n - sx * sx;
@@ -37,12 +38,24 @@ public class LinearApproximation extends Approximation {
         return a*x + b;
     }
 
-    public double PearsonCorrelationCoefficient(){
-        return 0;
+    public double pearsonCorrelationCoefficient(){
+        double midX = Arrays.stream(x).sum()/n;
+        double midY = Arrays.stream(y).sum()/n;
+        double a = IntStream.range(0, n).mapToDouble(i->(x[i]-midX)*(y[i]-midY)).sum();
+        double b = IntStream.range(0, n).mapToDouble(i->(x[i]-midX)*(x[i]-midX)).sum();
+        double c = IntStream.range(0, n).mapToDouble(i->(y[i]-midY)*(y[i]-midY)).sum();
+        return a/Math.sqrt(b*c);
     }
 
     @Override
     public String toString() {
-        return String.format("%s * x + %s", a, b);
+        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+        return String.format("%s * x + %s", decimalFormat.format(a), decimalFormat.format(b));
+    }
+
+    @Override
+    public String getStringAnswer(){
+        return String.format("\nЛинейная аппроксимирующая функция: %s\n%sКоэффициент корелляции Пирсона: %s\n",
+                toString(), super.getStringAnswer(), pearsonCorrelationCoefficient());
     }
 }
