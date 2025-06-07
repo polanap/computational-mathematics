@@ -26,11 +26,11 @@ public class LinearApproximation extends Approximation {
         double sxy = IntStream.range(0, n)
                 .mapToDouble(i->x[i]*y[i])
                 .sum();
-        double delta = sxx * n - sx * sx;
-        double delta1 = sxy * n - sx * sy;
-        double delta2 = sxx * sy - sx * sxy;
-        a = delta1 / delta;
-        b = delta2 / delta;
+        double det = sxx * n - sx * sx;
+        double det1 = sxy * n - sx * sy;
+        double det2 = sxx * sy - sx * sxy;
+        a = det1 / det;
+        b = det2 / det;
     }
 
     @Override

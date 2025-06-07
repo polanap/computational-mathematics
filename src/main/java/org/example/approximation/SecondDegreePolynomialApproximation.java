@@ -34,13 +34,13 @@ public class SecondDegreePolynomialApproximation extends Approximation {
         double sxxy = IntStream.range(0, n)
                 .mapToDouble(i->x[i]*x[i]*y[i])
                 .sum();
-        double delta = n*sxx*sx4 + sx*sx3*sxx + sxx*sx*sx3 - sxx*sxx*sxx - sx3*sx3*n - sx4*sx*sx;
-        double delta1 = sy*sxx*sx4 + sx*sx3*sxxy + sxx*sxy*sx3 - sxxy*sxx*sxx - sx3*sx3*sy - sx4*sxy*sx;
-        double delta2 = n*sxy*sx4 + sy*sx3*sxx + sxx*sx*sxxy - sxx*sxy*sxx - sxxy*sx3*n - sx4*sx*sy;
-        double delta3 = n*sxx*sxxy + sx*sxy*sxx + sy*sx*sx3 - sxx*sxx*sy - sx3*sxy*n - sxxy*sx*sx;
-        c = delta1 / delta;
-        b = delta2 / delta;
-        a = delta3 / delta;
+        double det = n*sxx*sx4 + sx*sx3*sxx + sxx*sx*sx3 - sxx*sxx*sxx - sx3*sx3*n - sx4*sx*sx;
+        double det1 = sy*sxx*sx4 + sx*sx3*sxxy + sxx*sxy*sx3 - sxxy*sxx*sxx - sx3*sx3*sy - sx4*sxy*sx;
+        double det2 = n*sxy*sx4 + sy*sx3*sxx + sxx*sx*sxxy - sxx*sxy*sxx - sxxy*sx3*n - sx4*sx*sy;
+        double det3 = n*sxx*sxxy + sx*sxy*sxx + sy*sx*sx3 - sxx*sxx*sy - sx3*sxy*n - sxxy*sx*sx;
+        c = det1 / det;
+        b = det2 / det;
+        a = det3 / det;
     }
 
     @Override

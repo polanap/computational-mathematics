@@ -30,11 +30,11 @@ public class ExponentialApproximation extends Approximation {
         double sxy = IntStream.range(0, n)
                 .mapToDouble(i-> x[i]* Math.log(y[i]))
                 .sum();
-        double delta = sxx * n - sx * sx;
-        double delta1 = sxy * n - sx * sy;
-        double delta2 = sxx * sy - sx * sxy;
-        b = delta1 / delta;
-        a = Math.exp(delta2 / delta);
+        double det = sxx * n - sx * sx;
+        double det1 = sxy * n - sx * sy;
+        double det2 = sxx * sy - sx * sxy;
+        b = det1 / det;
+        a = Math.exp(det2 / det);
     }
 
     @Override
