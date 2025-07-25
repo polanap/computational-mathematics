@@ -91,12 +91,12 @@ public class Main extends Application {
                         .mapToDouble(Double::parseDouble)
                         .toArray();
                 if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
-                else if (x.length < 8 || x.length > 12) throw new Exception("Количество координат должно быть от 8 до 12");
+//                else if (x.length < 8 || x.length > 12) throw new Exception("Количество координат должно быть от 8 до 12");
 
                 Task task = new Task(x, y);
                 String ansText = task.makeAnswer();
 
-                Label plotLabel = new Label("Графики аппроксимирующих функций");
+                Label plotLabel = new Label("Графики интерполяционных функций");
                 plotLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
                 gridPane.add(plotLabel, 1, 0);
                 gridPane.add(task.createPlotGrid(), 1, 1);
