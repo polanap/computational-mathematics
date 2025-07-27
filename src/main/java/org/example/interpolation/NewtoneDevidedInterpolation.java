@@ -14,7 +14,7 @@ public class NewtoneDevidedInterpolation extends Interpolation {
     }
 
     @Override
-    double calculate(double a) {
+    public double calculate(double a) {
         double result = div[0][0];
         for (int k = 1; k < n; k++) {
             double tmpResult = div[k][0];

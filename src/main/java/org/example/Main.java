@@ -24,6 +24,7 @@ public class Main extends Application {
 
     private double [] x = new double [10];
     private double [] y = new double [10];
+    private double point;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,7 +41,7 @@ public class Main extends Application {
         grid.setPadding(new Insets(20));
         grid.setHgap(20);
         grid.setVgap(20);
-        Scene scene = new Scene(grid, 1600, 1000);
+        Scene scene = new Scene(grid, 1400, 1000);
         scene.setFill(Color.LIGHTGRAY);
 
         GridPane task1Grid = createTaskGrid(primaryStage, grid);
@@ -59,11 +60,14 @@ public class Main extends Application {
         taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         TextField xInputField = new TextField();
-        Label xLabel = new Label("Введите значения x (через запятую): ");
-        xInputField.setPromptText("значения x");
+        Label xLabel = new Label("Введите значения X (через запятую): ");
+        xInputField.setPromptText("значения X");
         TextField yInputField = new TextField();
-        Label yLabel = new Label("Введите значения у (через запятую): ");
-        yInputField.setPromptText("значения y");
+        Label yLabel = new Label("Введите значения Y (через запятую): ");
+        yInputField.setPromptText("значения Y");
+        TextField xValueField = new TextField();
+        Label xValueLabel = new Label("Введите значение точки x");
+        xValueField.setPromptText("точка x");
 
         Button loadButton = new Button("Загрузить из файла");
         loadButton.setOnAction(e -> loadDataFromFile(primaryStage));
@@ -90,10 +94,12 @@ public class Main extends Application {
                 y = Arrays.stream(yInputField.getText().split(","))
                         .mapToDouble(Double::parseDouble)
                         .toArray();
-                if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
-//                else if (x.length < 8 || x.length > 12) throw new Exception("Количество координат должно быть от 8 до 12");
+                point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
 
-                Task task = new Task(x, y);
+                if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
+                else if (x.length < 2) throw new Exception("Количество координат должно быть не меньше 2");
+
+                Task task = new Task(x, y, point);
                 String ansText = task.makeAnswer();
 
                 Label plotLabel = new Label("Графики интерполяционных функций");
@@ -145,6 +151,8 @@ public class Main extends Application {
         taskGrid.add(xInputField, 1, 0);
         taskGrid.add(yLabel, 0, 1);
         taskGrid.add(yInputField, 1, 1);
+        taskGrid.add(xValueLabel, 0, 2);
+        taskGrid.add(xValueField, 1, 2);
         taskGrid.add(solveButton, 0, 5);
         taskGrid.add(saveButton, 1, 5);
         taskGrid.add(resultArea, 0, 6, 2, 1);

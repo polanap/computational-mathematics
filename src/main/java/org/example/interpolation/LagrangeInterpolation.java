@@ -12,7 +12,7 @@ public class LagrangeInterpolation extends Interpolation {
     }
 
     @Override
-    double calculate(double a) {
+    public double calculate(double a) {
         double result = 0;
         for (int i = 0; i < n; i++) {
             double tmpResult = y[i];

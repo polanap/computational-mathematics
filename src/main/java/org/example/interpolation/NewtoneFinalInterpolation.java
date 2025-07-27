@@ -20,7 +20,7 @@ public class NewtoneFinalInterpolation extends Interpolation {
     }
 
     @Override
-    double calculate(double a) {
+    public double calculate(double a) {
         if (a <= (x[n - 1] - x[0]) / 2) return calculate1(a);
         else return calculate2(a);
     }
