@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import org.example.approximation.*;
 import org.example.interpolation.FinalDiviation;
 import org.example.interpolation.LagrangeInterpolation;
+import org.example.interpolation.NewtoneDevidedInterpolation;
 import org.example.interpolation.NewtoneFinalInterpolation;
 
 import java.util.Arrays;
@@ -32,8 +33,21 @@ public class Task {
         ans += "Таблица конечных разностей:\n";
         ans += finalDiviation.getStringTable();
 
-        LagrangeInterpolation lagrangeInterpolation = new LagrangeInterpolation(x, y);
-        lagrangeInterpolation.plotGraph(lineChart[0]);
+        try{
+            LagrangeInterpolation lagrangeInterpolation = new LagrangeInterpolation(x, y);
+            lagrangeInterpolation.plotGraph(lineChart[0]);
+        }catch (Exception e){
+            ans+="Не удалось посчитать интерполяционный многочлен по формуле Лагранжа \n";
+            ans+=e.getMessage()+'\n';
+        }
+
+        try {
+            NewtoneDevidedInterpolation newtoneDevidedInterpolation = new NewtoneDevidedInterpolation(x, y);
+            newtoneDevidedInterpolation.plotGraph(lineChart[1]);
+        }catch (Exception e){
+            ans+="Не удалось посчитать интерполяционный многочлен по формуле Ньютона для разделенных разностей \n";
+            ans+=e.getMessage()+'\n';
+        }
 
         try{
             NewtoneFinalInterpolation newtoneFinalInterpolation = new NewtoneFinalInterpolation(x, y);
