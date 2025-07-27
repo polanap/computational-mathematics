@@ -32,13 +32,6 @@ public class FinalDiviation {
 
     public String getStringTable() {
 
-        for (int i = 0; i < n; i++) {
-            for (int k = 0; k < n; k++) {
-                System.out.print(div[i][k] + " ");
-            }
-            System.out.println();
-        }
-
         AsciiTable asciiTable = new AsciiTable();
         asciiTable.addRule();
         asciiTable.addRow(makeTitleRow(n));
@@ -49,7 +42,7 @@ public class FinalDiviation {
         }
 
         asciiTable.setTextAlignment(TextAlignment.CENTER);
-        return asciiTable.render();
+        return asciiTable.render() + "\n";
 
     }
 

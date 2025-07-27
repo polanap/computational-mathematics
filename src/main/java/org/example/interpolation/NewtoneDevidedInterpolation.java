@@ -2,15 +2,15 @@ package org.example.interpolation;
 
 import javafx.scene.paint.Color;
 
-public class NewtoneInterpolation extends Interpolation {
+public class NewtoneDevidedInterpolation extends Interpolation {
+    double[][] div;
 
-    public NewtoneInterpolation(double [] x, double [] y) {
+    public NewtoneDevidedInterpolation(double [] x, double [] y) {
         graphColor = Color.ORANGE;
         this.x = x;
         this.y = y;
         n = x.length;
-//        calculateCoefficients();
-//        createDeviation();
+        div = new FinalDiviation(y).div;
     }
 
     @Override
