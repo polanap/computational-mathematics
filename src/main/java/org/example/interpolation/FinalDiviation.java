@@ -24,8 +24,8 @@ public class FinalDiviation {
     private void calculateDiviation() {
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n - k; i++) {
-                if (k == 0) div[k][1] = y[i];
-                else div[k][1] = div[k + 1][i - 1] - div[i - 1][k];
+                if (k == 0) div[k][i] = y[i];
+                else div[k][i] = div[k - 1][i + 1] - div[k-1][i];
             }
         }
     }
@@ -43,8 +43,8 @@ public class FinalDiviation {
         asciiTable.addRule();
 //        asciiTable.addRow(IntStream.range(0, n).mapToObj(i->"k = " + i).toArray());
 //        asciiTable.addRule();
-        for (int i = 0; i < n; i++) {
-            asciiTable.addRow(makeRow("i = " + i, div[i], i));
+        for (int k = 0; k < n; k++) {
+            asciiTable.addRow(makeRow("k = " + k, div[k], k));
             asciiTable.addRule();
         }
 
@@ -63,7 +63,7 @@ public class FinalDiviation {
             list.add(title);
             for (int k = 0; k < size; k++) {
                 if (k >= size - i) list.add("-");
-                else list.add(decimalFormat.format(array[i]));
+                else list.add(decimalFormat.format(array[k]));
             }
             return list;
         }
