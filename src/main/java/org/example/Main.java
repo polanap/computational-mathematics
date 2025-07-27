@@ -31,9 +31,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Аппроксимация функции");
+        primaryStage.setTitle("Интерполяция функции");
 
-        Label taskLabel = new Label("Аппроксимация функции");
+        Label taskLabel = new Label("Интерполяция функции");
         taskLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         GridPane grid = new GridPane();

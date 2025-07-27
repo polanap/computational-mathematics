@@ -6,6 +6,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.GridPane;
 import org.example.approximation.*;
 import org.example.interpolation.FinalDiviation;
+import org.example.interpolation.LagrangeInterpolation;
 
 import java.util.Arrays;
 
@@ -27,7 +28,12 @@ public class Task {
         Arrays.stream(lineChart).forEach(p -> p.getData().clear());
         FinalDiviation finalDiviation = new FinalDiviation(y);
         String ans = "";
+        ans += "Таблица конечных разностей:\n";
         ans += finalDiviation.getStringTable();
+        LagrangeInterpolation lagrangeInterpolation = new LagrangeInterpolation(x, y);
+        lagrangeInterpolation.plotGraph(lineChart[0]);
+
+
 
 //        String bestApproximationAns = "";
 //        double bestDeviation = Double.MAX_VALUE;
@@ -121,9 +127,9 @@ public class Task {
         plotGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         Arrays.stream(lineChart).forEach(it -> it.setStyle("-fx-background-color: #f0f0f0;"));
-        lineChart[0].setTitle("Линейная функция");
-        lineChart[1].setTitle("Полином 2 степени");
-        lineChart[2].setTitle("Полином 3 степени");
+        lineChart[0].setTitle("Многочлен Лагранжа");
+        lineChart[1].setTitle("Многочлен Ньютона с разделенными разностями");
+        lineChart[2].setTitle("Многочлен Ньютона с конечными разностями");
 
         plotGrid.add(lineChart[0], 0, 0);
         plotGrid.add(lineChart[1], 0, 1);

@@ -13,7 +13,7 @@ public abstract class Interpolation implements Graphical {
     double [] y;
     int n;
 
-    final double overX = 1;
+    final double overX = 0.3;
     Color graphColor;
 
     abstract double calculate(double x);
@@ -22,7 +22,7 @@ public abstract class Interpolation implements Graphical {
     public void plotGraph(LineChart<Number, Number> lineChart) {
         // Серия для графика функции
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        series.setName("График функции " + this.toString());
+        series.setName("График функции");
 
         double left = Arrays.stream(x).min().getAsDouble() - overX;
         double right = Arrays.stream(x).max().getAsDouble() + overX;

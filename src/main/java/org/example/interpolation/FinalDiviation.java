@@ -41,8 +41,8 @@ public class FinalDiviation {
 
         AsciiTable asciiTable = new AsciiTable();
         asciiTable.addRule();
-//        asciiTable.addRow(IntStream.range(0, n).mapToObj(i->"k = " + i).toArray());
-//        asciiTable.addRule();
+        asciiTable.addRow(makeTitleRow(n));
+        asciiTable.addRule();
         for (int k = 0; k < n; k++) {
             asciiTable.addRow(makeRow("k = " + k, div[k], k));
             asciiTable.addRule();
@@ -52,6 +52,16 @@ public class FinalDiviation {
         return asciiTable.render();
 
     }
+
+    public static List<Object> makeTitleRow(int n) {
+        List<Object> list = new ArrayList<>(n);
+        list.add("");
+        for (int i = 0; i < n; i++) {
+            list.add(String.format("i = %d", i));
+        }
+        return list;
+    }
+
 
     public static List<Object> makeRow(String title, double[] array, int i) {
         DecimalFormat decimalFormat = new DecimalFormat("#.###");
