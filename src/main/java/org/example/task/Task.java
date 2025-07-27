@@ -13,13 +13,13 @@ import org.example.interpolation.NewtoneFinalInterpolation;
 import java.util.Arrays;
 
 public class Task {
-    double [] x;
-    double [] y;
+    double[] x;
+    double[] y;
     double point;
-    LineChart<Number, Number> [] lineChart = new LineChart[6];
+    LineChart<Number, Number>[] lineChart = new LineChart[6];
 
 
-    public Task(double [] x, double [] y, double point) {
+    public Task(double[] x, double[] y, double point) {
         this.x = x;
         this.y = y;
         this.point = point;
@@ -28,21 +28,21 @@ public class Task {
         }
     }
 
-    public String makeAnswer(){
+    public String makeAnswer() {
         Arrays.stream(lineChart).forEach(p -> p.getData().clear());
         FinalDiviation finalDiviation = new FinalDiviation(y);
         String ans = "";
         ans += "Таблица конечных разностей:\n";
         ans += finalDiviation.getStringTable();
 
-        try{
+        try {
             ans += "Многочлен Лагранжа:\n";
             LagrangeInterpolation lagrangeInterpolation = new LagrangeInterpolation(x, y);
             lagrangeInterpolation.plotGraph(lineChart[0]);
             ans += String.format("Значение L(x) = %s\n", lagrangeInterpolation.calculate(point));
-        }catch (Exception e){
-            ans+="Не удалось посчитать интерполяционный многочлен по формуле Лагранжа \n";
-            ans+=e.getMessage()+'\n';
+        } catch (Exception e) {
+            ans += "Не удалось посчитать интерполяционный многочлен по формуле Лагранжа \n";
+            ans += e.getMessage() + '\n';
         }
 
         try {
@@ -50,25 +50,25 @@ public class Task {
             NewtoneDevidedInterpolation newtoneDevidedInterpolation = new NewtoneDevidedInterpolation(x, y);
             newtoneDevidedInterpolation.plotGraph(lineChart[1]);
             ans += String.format("Значение N(x) = %s\n", newtoneDevidedInterpolation.calculate(point));
-        }catch (Exception e){
-            ans+="Не удалось посчитать интерполяционный многочлен по формуле Ньютона для разделенных разностей \n";
-            ans+=e.getMessage()+'\n';
+        } catch (Exception e) {
+            ans += "Не удалось посчитать интерполяционный многочлен по формуле Ньютона для разделенных разностей \n";
+            ans += e.getMessage() + '\n';
         }
 
-        try{
-            ans += "Многочлен Ньютона с конечными разностями:\n";
+        try {
+            ans += String.format("Многочлен Ньютона с конечными разностями (%s формула):\n", (point <= (x[x.length - 1] + x[0]) / 2) ? 1 : 2);
             NewtoneFinalInterpolation newtoneFinalInterpolation = new NewtoneFinalInterpolation(x, y);
             newtoneFinalInterpolation.plotGraph(lineChart[2]);
             ans += String.format("Значение N(x) = %s\n", newtoneFinalInterpolation.calculate(point));
-        }catch (Exception e){
-            ans+="Не удалось посчитать интерполяционный многочлен по формуле Ньютона для конечных разностей \n";
-            ans+=e.getMessage()+'\n';
+        } catch (Exception e) {
+            ans += "Не удалось посчитать интерполяционный многочлен по формуле Ньютона для конечных разностей \n";
+            ans += e.getMessage() + '\n';
         }
 
         return ans;
     }
 
-    public GridPane createPlotGrid(){
+    public GridPane createPlotGrid() {
         GridPane plotGrid = new GridPane();
         plotGrid.setPadding(new Insets(10));
         plotGrid.setVgap(10);

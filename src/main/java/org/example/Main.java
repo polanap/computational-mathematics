@@ -1,6 +1,4 @@
-package org.example;
-
-import javafx.scene.layout.Priority;
+package org.example;import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -8,22 +6,18 @@ import org.example.task.Task;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 
 public class Main extends Application {
 
-    private double [] x = new double [10];
-    private double [] y = new double [10];
+    private double[] x = new double[10];
+    private double[] y = new double[10];
     private double point;
 
     public static void main(String[] args) {
@@ -59,6 +53,10 @@ public class Main extends Application {
         taskGrid.setVgap(10);
         taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
+        ComboBox<String> inputMethodComboBox = new ComboBox<>();
+        inputMethodComboBox.getItems().addAll("Ввод из файла", "Ввод с клавиатуры");
+        inputMethodComboBox.setValue("Ввод с клавиатуры"); // Default selection
+
         TextField xInputField = new TextField();
         Label xLabel = new Label("Введите значения X (через запятую): ");
         xInputField.setPromptText("значения X");
@@ -77,7 +75,6 @@ public class Main extends Application {
         solveButton.setOnMouseEntered(e -> solveButton.setStyle("-fx-background-color: #45a049; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
         solveButton.setOnMouseExited(e -> solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;"));
 
-        taskGrid.setMinWidth(800);
         TextArea resultArea = new TextArea();
         resultArea.setEditable(false);
         resultArea.setWrapText(true);
@@ -86,15 +83,38 @@ public class Main extends Application {
         resultArea.setMinHeight(700); // Установка минимальной высоты
         resultArea.setPrefWidth(800); // Установка предпочтительной ширины
 
+        // Show/hide input fields based on selected method
+        inputMethodComboBox.setOnAction(e -> {
+            if (inputMethodComboBox.getValue().equals("Ввод из файла")) {
+                xLabel.setVisible(false);
+                yLabel.setVisible(false);
+                xValueLabel.setVisible(false);
+                xInputField.setVisible(false);
+                yInputField.setVisible(false);
+                xValueField.setVisible(false);
+                loadButton.setVisible(true);
+            } else {
+                xLabel.setVisible(true);
+                yLabel.setVisible(true);
+                xValueLabel.setVisible(true);
+                xInputField.setVisible(true);
+                yInputField.setVisible(true);
+                xValueField.setVisible(true);
+                        loadButton.setVisible(false);
+            }
+        });
+
         solveButton.setOnAction(e -> {
             try {
-                x = Arrays.stream(xInputField.getText().split(","))
-                        .mapToDouble(Double::parseDouble)
-                        .toArray();
-                y = Arrays.stream(yInputField.getText().split(","))
-                        .mapToDouble(Double::parseDouble)
-                        .toArray();
-                point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
+                if (inputMethodComboBox.getValue().equals("Ввод с клавиатуры")) {
+                    x = Arrays.stream(xInputField.getText().split(","))
+                            .mapToDouble(Double::parseDouble)
+                            .toArray();
+                    y = Arrays.stream(yInputField.getText().split(","))
+                            .mapToDouble(Double::parseDouble)
+                            .toArray();
+                    point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
+                }
 
                 if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
                 else if (x.length < 2) throw new Exception("Количество координат должно быть не меньше 2");
@@ -144,22 +164,29 @@ public class Main extends Application {
         GridPane.setHgrow(xInputField, Priority.ALWAYS);
         GridPane.setHgrow(yInputField, Priority.ALWAYS);
         GridPane.setHgrow(resultArea, Priority.ALWAYS);
-//        GridPane.setHgrow(lineChart, Priority.ALWAYS);
 
         // Добавление элементов в taskGrid
-        taskGrid.add(xLabel, 0, 0);
-        taskGrid.add(xInputField, 1, 0);
-        taskGrid.add(yLabel, 0, 1);
-        taskGrid.add(yInputField, 1, 1);
-        taskGrid.add(xValueLabel, 0, 2);
-        taskGrid.add(xValueField, 1, 2);
+        taskGrid.add(new Label("Способ ввода:"), 0, 0);
+        taskGrid.add(inputMethodComboBox, 1, 0);
+        taskGrid.add(xLabel, 0, 1);
+        taskGrid.add(xInputField, 1, 1);
+        taskGrid.add(yLabel, 0, 2);
+        taskGrid.add(yInputField, 1, 2);
+        taskGrid.add(xValueLabel, 0, 3);
+        taskGrid.add(xValueField, 1, 3);
+        taskGrid.add(loadButton, 0, 1);
         taskGrid.add(solveButton, 0, 5);
         taskGrid.add(saveButton, 1, 5);
         taskGrid.add(resultArea, 0, 6, 2, 1);
 
+        // Initially hide input fields for file input
+        xInputField.setVisible(true);
+        yInputField.setVisible(true);
+        xValueField.setVisible(true);
+        loadButton.setVisible(false);
+
         return taskGrid;
     }
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -176,16 +203,13 @@ public class Main extends Application {
 
         if (file != null) {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                String line;
-                int index = 0;
-                while ((line = br.readLine()) != null && index < x.length) {
-                    String[] values = line.split(",");
-                    if (values.length >= 2) {
-                        x[index] = Double.parseDouble(values[0].trim());
-                        y[index] = Double.parseDouble(values[1].trim());
-                        index++;
-                    }
-                }
+                x = Arrays.stream(br.readLine().split(","))
+                        .mapToDouble(Double::parseDouble)
+                        .toArray();
+                y = Arrays.stream(br.readLine().split(","))
+                        .mapToDouble(Double::parseDouble)
+                        .toArray();
+                point = Double.parseDouble(br.readLine().trim().replace(",", "."));
                 showAlert("Успех", "Данные успешно загружены из файла.");
             } catch (IOException | NumberFormatException ex) {
                 showAlert("Ошибка", "Не удалось загрузить данные: " + ex.getMessage());
@@ -193,3 +217,4 @@ public class Main extends Application {
         }
     }
 }
+
