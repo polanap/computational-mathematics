@@ -1,6 +1,7 @@
 package org.example.functions;
 
 import java.util.Arrays;
+import java.util.List;
 
 public enum Function implements FunctionInterface {
     FUNCTION_1 {
@@ -38,17 +39,17 @@ public enum Function implements FunctionInterface {
     };
 
 
-    public static String getAllFunctions() {
-        return String.join(
-                "\n",
-                Arrays.stream(Function.values())
+    public static List<String> getAllFunctions() {
+        return Arrays.stream(Function.values())
                         .map(Enum::toString)
-                        .toList());
+                        .toList();
     }
 
-    public double derivative(double x) {
-        double eps = 0.1e-10;
-        return (this.calculate(x) - this.calculate(x - eps)) / eps;
+    public static Function getFunctionByStr(String fun) {
+        return Arrays.stream(Function.values())
+                .filter(it -> it.toString().equals(fun))
+                .findFirst()
+                .orElseThrow();
     }
 
 }

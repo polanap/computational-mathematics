@@ -2,6 +2,7 @@ package org.example;import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import org.example.functions.Function;
 import org.example.task.Task;
 
 import java.io.*;
@@ -54,7 +55,7 @@ public class Main extends Application {
         taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         ComboBox<String> inputMethodComboBox = new ComboBox<>();
-        inputMethodComboBox.getItems().addAll("Ввод из файла", "Ввод с клавиатуры", "На основе функции");
+        inputMethodComboBox.getItems().addAll("Ввод с клавиатуры", "Ввод из файла", "На основе функции");
         inputMethodComboBox.setValue("Ввод с клавиатуры"); // Default selection
 
         TextField xInputField = new TextField();
@@ -71,6 +72,18 @@ public class Main extends Application {
         loadButton.setOnAction(e -> loadDataFromFile(primaryStage));
 
 
+        Label functionLabel = new Label("Выберите функцию: ");
+        ComboBox<String> functionComboBox = new ComboBox<>();
+        functionComboBox.getItems().addAll(Function.getAllFunctions());
+        functionComboBox.setValue(Function.FUNCTION_1.toString()); // Default selection
+        Label intervalLabel = new Label("Введите исследуемый интервал: ");
+        TextField startInputField = new TextField();
+        startInputField.setPromptText("от");
+        TextField endInputField = new TextField();
+        endInputField.setPromptText("до");
+        Label countLabel = new Label("Введите количество точек: ");
+        TextField countInputField = new TextField();
+        countInputField.setPromptText("количество точек");
 
         Button solveButton = new Button("Решить");
         solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;");
@@ -94,15 +107,51 @@ public class Main extends Application {
                 xInputField.setVisible(false);
                 yInputField.setVisible(false);
                 xValueField.setVisible(false);
+
                 loadButton.setVisible(true);
-            } else {
+
+                functionLabel.setVisible(false);
+                functionComboBox.setVisible(false);
+                intervalLabel.setVisible(false);
+                startInputField.setVisible(false);
+                endInputField.setVisible(false);
+                countLabel.setVisible(false);
+                countInputField.setVisible(false);
+            } else if (inputMethodComboBox.getValue().equals("Ввод с клавиатуры")){
                 xLabel.setVisible(true);
                 yLabel.setVisible(true);
                 xValueLabel.setVisible(true);
                 xInputField.setVisible(true);
                 yInputField.setVisible(true);
                 xValueField.setVisible(true);
-                        loadButton.setVisible(false);
+
+                loadButton.setVisible(false);
+
+                functionLabel.setVisible(false);
+                functionComboBox.setVisible(false);
+                intervalLabel.setVisible(false);
+                startInputField.setVisible(false);
+                endInputField.setVisible(false);
+                countLabel.setVisible(false);
+                countInputField.setVisible(false);
+
+            } else {
+                xLabel.setVisible(false);
+                yLabel.setVisible(false);
+                xValueLabel.setVisible(true);
+                xInputField.setVisible(false);
+                yInputField.setVisible(false);
+                xValueField.setVisible(true);
+
+                loadButton.setVisible(false);
+
+                functionLabel.setVisible(true);
+                functionComboBox.setVisible(true);
+                intervalLabel.setVisible(true);
+                startInputField.setVisible(true);
+                endInputField.setVisible(true);
+                countLabel.setVisible(true);
+                countInputField.setVisible(true);
             }
         });
 
@@ -130,6 +179,42 @@ public class Main extends Application {
                 gridPane.add(task.createPlotGrid(), 1, 1);
                 System.out.println(ansText);
                 resultArea.setText(ansText);
+
+            } catch (Exception ex) {
+                resultArea.setText("Ошибка: " + ex.getMessage());
+            }
+        });
+
+        solveButton.setOnAction(e -> {
+            try {
+                if (inputMethodComboBox.getValue().equals("На основе функции")) {
+                    Function function = Function.getFunctionByStr(functionComboBox.getValue());
+                    Double start = Double.parseDouble(startInputField.getText().trim().replace(",", "."));
+                    Double end = Double.parseDouble(endInputField.getText().trim().replace(",", "."));
+                    int count = Integer.parseInt(countInputField.getText().trim().replace(",", ""));
+                    point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
+
+                    if (start >= end) throw new Exception("Начало отрезка должно быть меньше его конца");
+                    else if (count < 2 || count > 20) throw new Exception("Количество точек должно быть не меньше 2 и не больше 10");
+
+                    x = new double[count];
+                    y = new double[count];
+
+                    for (int i = 0; i < count; i++) {
+                        x[i] = start + (end - start) * i / (count - 1);
+                        y[i] = function.calculate(x[i]);
+                    }
+
+                    Task task = new Task(x, y, point);
+                    String ansText = task.makeAnswer();
+
+                    Label plotLabel = new Label("Графики интерполяционных функций");
+                    plotLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+                    gridPane.add(plotLabel, 1, 0);
+                    gridPane.add(task.createPlotGrid(), 1, 1);
+                    System.out.println(ansText);
+                    resultArea.setText(ansText);
+                }
 
             } catch (Exception ex) {
                 resultArea.setText("Ошибка: " + ex.getMessage());
@@ -174,18 +259,40 @@ public class Main extends Application {
         taskGrid.add(xInputField, 1, 1);
         taskGrid.add(yLabel, 0, 2);
         taskGrid.add(yInputField, 1, 2);
-        taskGrid.add(xValueLabel, 0, 3);
-        taskGrid.add(xValueField, 1, 3);
+        taskGrid.add(xValueLabel, 0, 4);
+        taskGrid.add(xValueField, 1, 4);
+
         taskGrid.add(loadButton, 0, 1);
+
+        taskGrid.add(functionLabel, 0, 1);
+        taskGrid.add(functionComboBox, 1, 1);
+        taskGrid.add(intervalLabel, 0, 2);
+        taskGrid.add(startInputField, 1, 2);
+        taskGrid.add(endInputField, 2, 2);
+        taskGrid.add(countLabel, 0, 3);
+        taskGrid.add(countInputField, 1, 3);
+
         taskGrid.add(solveButton, 0, 5);
         taskGrid.add(saveButton, 1, 5);
         taskGrid.add(resultArea, 0, 6, 2, 1);
 
         // Initially hide input fields for file input
+        xLabel.setVisible(true);
+        yLabel.setVisible(true);
+        xValueLabel.setVisible(true);
         xInputField.setVisible(true);
         yInputField.setVisible(true);
         xValueField.setVisible(true);
+
         loadButton.setVisible(false);
+
+        functionLabel.setVisible(false);
+        functionComboBox.setVisible(false);
+        intervalLabel.setVisible(false);
+        startInputField.setVisible(false);
+        endInputField.setVisible(false);
+        countLabel.setVisible(false);
+        countInputField.setVisible(false);
 
         return taskGrid;
     }
