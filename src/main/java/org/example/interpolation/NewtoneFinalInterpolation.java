@@ -1,15 +1,19 @@
 package org.example.interpolation;
 
 import javafx.scene.paint.Color;
+import org.example.interpolation.diviation.FinalDiviation;
+
+import static java.lang.Math.abs;
 
 public class NewtoneFinalInterpolation extends Interpolation {
     double[][] div;
     double h;
 
     public NewtoneFinalInterpolation(double[] x, double[] y) throws Exception {
+        double ZERO = 10e-7;
         h = x[1] - x[0];
         for (int i = 2; i < x.length; i++) {
-            if (h != x[i] - x[i - 1])
+            if (abs(h - (x[i] - x[i - 1])) > ZERO)
                 throw new Exception("Узлы не являются равноотстоящими. Невозможно посчитать результат.");
         }
         graphColor = Color.ORANGE;

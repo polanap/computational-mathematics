@@ -165,10 +165,29 @@ public class Main extends Application {
                             .mapToDouble(Double::parseDouble)
                             .toArray();
                     point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
-                }
 
-                if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
-                else if (x.length < 2) throw new Exception("Количество координат должно быть не меньше 2");
+                    if (x.length != y.length) throw new Exception("Количество значений x и y должно совпадать");
+                    else if (x.length < 2) throw new Exception("Количество координат должно быть не меньше 2");
+
+                } else if (inputMethodComboBox.getValue().equals("На основе функции")) {
+                    Function function = Function.getFunctionByStr(functionComboBox.getValue());
+                    Double start = Double.parseDouble(startInputField.getText().trim().replace(",", "."));
+                    Double end = Double.parseDouble(endInputField.getText().trim().replace(",", "."));
+                    int count = Integer.parseInt(countInputField.getText().trim().replace(",", ""));
+                    point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
+
+                    if (start >= end) throw new Exception("Начало отрезка должно быть меньше его конца");
+                    else if (count < 2 || count > 20)
+                        throw new Exception("Количество точек должно быть не меньше 2 и не больше 10");
+
+                    x = new double[count];
+                    y = new double[count];
+
+                    for (int i = 0; i < count; i++) {
+                        x[i] = start + (end - start) * i / (count - 1);
+                        y[i] = function.calculate(x[i]);
+                    }
+                }
 
                 Task task = new Task(x, y, point);
                 String ansText = task.makeAnswer();
@@ -179,42 +198,6 @@ public class Main extends Application {
                 gridPane.add(task.createPlotGrid(), 1, 1);
                 System.out.println(ansText);
                 resultArea.setText(ansText);
-
-            } catch (Exception ex) {
-                resultArea.setText("Ошибка: " + ex.getMessage());
-            }
-        });
-
-        solveButton.setOnAction(e -> {
-            try {
-                if (inputMethodComboBox.getValue().equals("На основе функции")) {
-                    Function function = Function.getFunctionByStr(functionComboBox.getValue());
-                    Double start = Double.parseDouble(startInputField.getText().trim().replace(",", "."));
-                    Double end = Double.parseDouble(endInputField.getText().trim().replace(",", "."));
-                    int count = Integer.parseInt(countInputField.getText().trim().replace(",", ""));
-                    point = Double.parseDouble(xValueField.getText().trim().replace(",", "."));
-
-                    if (start >= end) throw new Exception("Начало отрезка должно быть меньше его конца");
-                    else if (count < 2 || count > 20) throw new Exception("Количество точек должно быть не меньше 2 и не больше 10");
-
-                    x = new double[count];
-                    y = new double[count];
-
-                    for (int i = 0; i < count; i++) {
-                        x[i] = start + (end - start) * i / (count - 1);
-                        y[i] = function.calculate(x[i]);
-                    }
-
-                    Task task = new Task(x, y, point);
-                    String ansText = task.makeAnswer();
-
-                    Label plotLabel = new Label("Графики интерполяционных функций");
-                    plotLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
-                    gridPane.add(plotLabel, 1, 0);
-                    gridPane.add(task.createPlotGrid(), 1, 1);
-                    System.out.println(ansText);
-                    resultArea.setText(ansText);
-                }
 
             } catch (Exception ex) {
                 resultArea.setText("Ошибка: " + ex.getMessage());

@@ -4,7 +4,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import org.example.approximation.Graphical;
 
 import java.util.Arrays;
 

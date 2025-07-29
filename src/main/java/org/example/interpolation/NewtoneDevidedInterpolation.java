@@ -1,6 +1,7 @@
 package org.example.interpolation;
 
 import javafx.scene.paint.Color;
+import org.example.interpolation.diviation.DividedDiviation;
 
 public class NewtoneDevidedInterpolation extends Interpolation {
     double[][] div;

@@ -1,18 +1,16 @@
-package org.example.interpolation;
+package org.example.interpolation.diviation;
 
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class FinalDiviation {
     int n;
     double[] y;
-    double[][] div;
+    public double[][] div;
 
     public FinalDiviation(double[] y) {
         this.y = y;

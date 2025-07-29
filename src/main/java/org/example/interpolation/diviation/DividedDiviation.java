@@ -1,10 +1,10 @@
-package org.example.interpolation;
+package org.example.interpolation.diviation;
 
 public class DividedDiviation {
     int n;
     double[] y;
     double[] x;
-    double[][] div;
+    public double[][] div;
 
     public DividedDiviation(double[] x, double[] y) {
         this.x = x;

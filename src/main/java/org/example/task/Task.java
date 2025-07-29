@@ -1,16 +1,20 @@
 package org.example.task;
 
+import de.vandermeer.asciitable.AsciiTable;
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.GridPane;
-import org.example.approximation.*;
-import org.example.interpolation.FinalDiviation;
+import org.example.interpolation.diviation.FinalDiviation;
 import org.example.interpolation.LagrangeInterpolation;
 import org.example.interpolation.NewtoneDevidedInterpolation;
 import org.example.interpolation.NewtoneFinalInterpolation;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Task {
     double[] x;
@@ -32,6 +36,8 @@ public class Task {
         Arrays.stream(lineChart).forEach(p -> p.getData().clear());
         FinalDiviation finalDiviation = new FinalDiviation(y);
         String ans = "";
+        ans += "Значения Х и У:\n";
+        ans += getStringTable();
         ans += "Таблица конечных разностей:\n";
         ans += finalDiviation.getStringTable();
 
@@ -83,5 +89,35 @@ public class Task {
         plotGrid.add(lineChart[1], 0, 1);
         plotGrid.add(lineChart[2], 0, 2);
         return plotGrid;
+    }
+
+    public String getStringTable() {
+
+        AsciiTable asciiTable = new AsciiTable();
+        asciiTable.addRule();
+        asciiTable.addRow(makeRow("x", x));
+        asciiTable.addRule();
+        asciiTable.addRow(makeRow("y", y));
+        asciiTable.addRule();
+
+        asciiTable.setTextAlignment(TextAlignment.CENTER);
+        return asciiTable.render() + "\n";
+
+    }
+
+
+    public static List<Object> makeRow(String title, double[] array) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+        if (array == null) {
+            return new ArrayList<>(0);
+        } else {
+            int size = array.length;
+            List<Object> list = new ArrayList<>(size);
+            list.add(title);
+            for (double v : array) {
+                list.add(decimalFormat.format(v));
+            }
+            return list;
+        }
     }
 }
