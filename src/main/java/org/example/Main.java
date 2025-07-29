@@ -54,7 +54,7 @@ public class Main extends Application {
         taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         ComboBox<String> inputMethodComboBox = new ComboBox<>();
-        inputMethodComboBox.getItems().addAll("Ввод из файла", "Ввод с клавиатуры");
+        inputMethodComboBox.getItems().addAll("Ввод из файла", "Ввод с клавиатуры", "На основе функции");
         inputMethodComboBox.setValue("Ввод с клавиатуры"); // Default selection
 
         TextField xInputField = new TextField();
@@ -69,6 +69,8 @@ public class Main extends Application {
 
         Button loadButton = new Button("Загрузить из файла");
         loadButton.setOnAction(e -> loadDataFromFile(primaryStage));
+
+
 
         Button solveButton = new Button("Решить");
         solveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5;");
