@@ -250,8 +250,10 @@ public class Main extends Application {
         taskGrid.add(functionLabel, 0, 1);
         taskGrid.add(functionComboBox, 1, 1);
         taskGrid.add(intervalLabel, 0, 2);
-        taskGrid.add(startInputField, 1, 2);
-        taskGrid.add(endInputField, 2, 2);
+        GridPane intervalGrid = new GridPane();
+        intervalGrid.add(startInputField, 0, 0);
+        intervalGrid.add(endInputField, 1, 0);
+        taskGrid.add(intervalGrid, 1, 2);
         taskGrid.add(countLabel, 0, 3);
         taskGrid.add(countInputField, 1, 3);
 
