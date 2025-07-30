@@ -6,6 +6,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.GridPane;
 import org.example.functions.Function;
 import org.example.methods.EilerMethod;
+import org.example.methods.MilnaMethod;
 import org.example.methods.RungeKuttaMethod;
 
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class Task {
 
         } catch (Exception e) {
             ans.append("Не удалось решить ОДУ методом Эйлера\n");
-            ans.append(Arrays.toString(e.getStackTrace())).append('\n');
+            ans.append(e.getMessage()).append('\n');;
         }
 
         try {
@@ -68,6 +69,9 @@ public class Task {
 
         try {
             ans.append("Метод Милна:\n");
+            MilnaMethod method = new MilnaMethod(function, x, y0, h, eps);
+            method.plotGraph(lineChart[2]);
+            ans.append(method.getStringTable()).append('\n');
 
         } catch (Exception e) {
             ans.append("Не удалось решить ОДУ методом Милна\n");
