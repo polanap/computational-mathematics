@@ -56,8 +56,6 @@ public class Main extends Application {
         functionComboBox.setValue(Function.FUNCTION_1.toString()); // Default selection
 
         Label basicLabel = new Label("Введите начальные условия: y0 = y(x0)  ");
-        TextField xInputField = new TextField();
-        xInputField.setPromptText("x0");
         TextField yInputField = new TextField();
         yInputField.setPromptText("y0");
 
@@ -96,12 +94,11 @@ public class Main extends Application {
                 Double end = Double.parseDouble(endInputField.getText().trim().replace(",", "."));
                 Double h = Double.parseDouble(hInputField.getText().trim().replace(",", ""));
                 Double eps = Double.parseDouble(epsInputField.getText().trim().replace(",", ""));
-                Double x = Double.parseDouble(xInputField.getText().trim().replace(",", ""));
                 Double y = Double.parseDouble(yInputField.getText().trim().replace(",", ""));
 
                 if (start >= end) throw new Exception("Начало отрезка должно быть меньше его конца");
 
-                Task task = new Task(function, start, end, h, eps, x, y);
+                Task task = new Task(function, start, end, h, eps, y);
                 String ansText = task.makeAnswer();
 
                 Label plotLabel = new Label("Графики");
@@ -148,10 +145,7 @@ public class Main extends Application {
         taskGrid.add(functionComboBox, 1, 0);
 
         taskGrid.add(basicLabel, 0, 1);
-        GridPane basicGrid = new GridPane();
-        basicGrid.add(xInputField, 0, 0);
-        basicGrid.add(yInputField, 1, 0);
-        taskGrid.add(basicGrid, 1, 1);
+        taskGrid.add(yInputField, 1, 1);
 
         taskGrid.add(intervalLabel, 0, 2);
         GridPane intervalGrid = new GridPane();

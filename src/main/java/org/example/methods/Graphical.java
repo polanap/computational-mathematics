@@ -1,4 +1,4 @@
-package org.example.interpolation;
+package org.example.methods;
 
 import javafx.scene.chart.LineChart;
 

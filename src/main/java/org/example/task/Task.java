@@ -1,21 +1,12 @@
 package org.example.task;
 
-import de.vandermeer.asciitable.AsciiTable;
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.GridPane;
 import org.example.functions.Function;
-import org.example.interpolation.diviation.FinalDiviation;
-import org.example.interpolation.LagrangeInterpolation;
-import org.example.interpolation.NewtoneDevidedInterpolation;
-import org.example.interpolation.NewtoneFinalInterpolation;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import org.example.methods.EilerMethod;
 import java.util.Arrays;
-import java.util.List;
 
 public class Task {
     Function function;
@@ -23,53 +14,62 @@ public class Task {
     double end;
     double h;
     double eps;
+    double y0;
+    int count;
+    double [] x;
     LineChart<Number, Number>[] lineChart = new LineChart[3];
 
 
-    public Task(Function function, double start, double end, double h, double eps, double x, double y) {
+    public Task(Function function, double start, double end, double h, double eps, double y0) {
         this.function = function;
         this.start = start;
         this.end = end;
         this.h = h;
         this.eps = eps;
-        for (int i = 0; i < 6; i++) {
+        this.y0 = y0;
+        count = (int) Math.floor((end - start) / h) + 1;
+        for (int i = 0; i < 3; i++) {
             lineChart[i] = new LineChart<>(new NumberAxis(), new NumberAxis());
+        }
+        x = new double [count];
+        for (int i = 0; i < count; i++) {
+            x[i] = start + i * h;
         }
     }
 
     public String makeAnswer() {
         Arrays.stream(lineChart).forEach(p -> p.getData().clear());
-        String ans = "";
+        StringBuilder ans = new StringBuilder();
 
         try {
-            ans += "Метод Эйлера:\n";
+            ans.append("Метод Эйлера:\n");
 
-//            LagrangeInterpolation lagrangeInterpolation = new LagrangeInterpolation(x, y);
-//            lagrangeInterpolation.plotGraph(lineChart[0]);
-//            ans += String.format("Значение L(x) = %s\n", lagrangeInterpolation.calculate(point));
+            EilerMethod eilerMethod = new EilerMethod(function, x, y0, h, eps);
+            eilerMethod.plotGraph(lineChart[0]);
+            ans.append(eilerMethod.getStringTable()).append('\n');
 
         } catch (Exception e) {
-            ans += "Не удалось решить ОДУ методом Эйлера\n";
-            ans += e.getMessage() + '\n';
+            ans.append("Не удалось решить ОДУ методом Эйлера\n");
+            ans.append(e.getMessage()).append('\n');
         }
 
         try {
-            ans += "Метод Рунге-Кутта 4-го порядка:\n";
+            ans.append("Метод Рунге-Кутта 4-го порядка:\n");
 
         } catch (Exception e) {
-            ans += "Не удалось решить ОДУ методом Рунге-Кутта 4-го порядка\n";
-            ans += e.getMessage() + '\n';
+            ans.append("Не удалось решить ОДУ методом Рунге-Кутта 4-го порядка\n");
+            ans.append(e.getMessage()).append('\n');
         }
 
         try {
-            ans += "Метод Милна:\n";
+            ans.append("Метод Милна:\n");
 
         } catch (Exception e) {
-            ans += "Не удалось решить ОДУ методом Милна\n";
-            ans += e.getMessage() + '\n';
+            ans.append("Не удалось решить ОДУ методом Милна\n");
+            ans.append(e.getMessage()).append('\n');
         }
 
-        return ans;
+        return ans.toString();
     }
 
     public GridPane createPlotGrid() {
@@ -104,18 +104,18 @@ public class Task {
 //    }
 
 
-    public static List<Object> makeRow(String title, double[] array) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.###");
-        if (array == null) {
-            return new ArrayList<>(0);
-        } else {
-            int size = array.length;
-            List<Object> list = new ArrayList<>(size);
-            list.add(title);
-            for (double v : array) {
-                list.add(decimalFormat.format(v));
-            }
-            return list;
-        }
-    }
+//    public static List<Object> makeRow(String title, double[] array) {
+//        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+//        if (array == null) {
+//            return new ArrayList<>(0);
+//        } else {
+//            int size = array.length;
+//            List<Object> list = new ArrayList<>(size);
+//            list.add(title);
+//            for (double v : array) {
+//                list.add(decimalFormat.format(v));
+//            }
+//            return list;
+//        }
+//    }
 }
