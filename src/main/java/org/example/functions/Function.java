@@ -7,34 +7,49 @@ public enum Function implements FunctionInterface {
     FUNCTION_1 {
         @Override
         public String toString() {
-            return "sin(x)";
+            return "y' = y + (1 + x)y^2";
         }
 
         @Override
-        public double calculate(double x) {
-            return Math.sin(x);
+        public double derivative(double x, double y) {
+            return 0;
+        }
+
+        @Override
+        public double derivativeExact(double x, double y) {
+            return 0;
         }
     },
     FUNCTION_2 {
         @Override
         public String toString() {
-            return "cos(x)*0.5 + 1";
+            return "y' = 2xy / (x^2 + 1)";
         }
 
         @Override
-        public double calculate(double x) {
-            return Math.cos(x) * 0.5 + 1;
+        public double derivative(double x, double y) {
+            return 0;
+        }
+
+        @Override
+        public double derivativeExact(double x, double y) {
+            return 0;
         }
     },
     FUNCTION_3 {
         @Override
         public String toString() {
-            return "x^3 - x^2 - x + 2 = 0";
+            return "y' = y + 1 + x";
         }
 
         @Override
-        public double calculate(double x) {
-            return x * x * x - x * x - x + 2;
+        public double derivative(double x, double y) {
+            return 0;
+        }
+
+        @Override
+        public double derivativeExact(double x, double y) {
+            return 0;
         }
     };
 
