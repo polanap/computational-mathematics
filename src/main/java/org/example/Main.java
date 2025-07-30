@@ -50,6 +50,7 @@ public class Main extends Application {
 
     private GridPane createTaskGrid(Stage primaryStage, GridPane gridPane) {
         GridPane taskGrid = new GridPane();
+        GridPane intervalGrid = new GridPane();
         taskGrid.setPadding(new Insets(10));
         taskGrid.setVgap(10);
         taskGrid.setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
@@ -117,6 +118,7 @@ public class Main extends Application {
                 endInputField.setVisible(false);
                 countLabel.setVisible(false);
                 countInputField.setVisible(false);
+                intervalGrid.setVisible(false);
             } else if (inputMethodComboBox.getValue().equals("Ввод с клавиатуры")){
                 xLabel.setVisible(true);
                 yLabel.setVisible(true);
@@ -134,6 +136,7 @@ public class Main extends Application {
                 endInputField.setVisible(false);
                 countLabel.setVisible(false);
                 countInputField.setVisible(false);
+                intervalGrid.setVisible(false);
 
             } else {
                 xLabel.setVisible(false);
@@ -152,6 +155,7 @@ public class Main extends Application {
                 endInputField.setVisible(true);
                 countLabel.setVisible(true);
                 countInputField.setVisible(true);
+                intervalGrid.setVisible(true);
             }
         });
 
@@ -250,7 +254,6 @@ public class Main extends Application {
         taskGrid.add(functionLabel, 0, 1);
         taskGrid.add(functionComboBox, 1, 1);
         taskGrid.add(intervalLabel, 0, 2);
-        GridPane intervalGrid = new GridPane();
         intervalGrid.add(startInputField, 0, 0);
         intervalGrid.add(endInputField, 1, 0);
         taskGrid.add(intervalGrid, 1, 2);
@@ -278,6 +281,7 @@ public class Main extends Application {
         endInputField.setVisible(false);
         countLabel.setVisible(false);
         countInputField.setVisible(false);
+        intervalGrid.setVisible(false);
 
         return taskGrid;
     }
