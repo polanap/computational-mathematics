@@ -16,8 +16,14 @@ public class MilnaMethod extends Method {
 
     @Override
     public void calculate() {
-//        for (int i = 1; i < count; i++) {
-//            y[i] = y[i - 1] + h * function.derivative(x[i - 1], y[i - 1]);
-//        }
+        for (int i = 3; i < count; i++) {
+            double yPredict = y[i - 4] + 4 * h * (2 * f(i - 3) - f(i - 2) + 2 * f(i - 1)) / 3;
+            double fPredict = function.derivative(x[i], yPredict);
+            y[i] = y[i - 2] + h * (f(i - 2) + 4 * f(i - 1) + fPredict) / 3;
+        }
+    }
+
+    public double f(int i) {
+        return function.derivative(x[i], y[i]);
     }
 }

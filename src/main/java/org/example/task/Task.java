@@ -6,6 +6,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.GridPane;
 import org.example.functions.Function;
 import org.example.methods.EilerMethod;
+import org.example.methods.RungeKuttaMethod;
+
 import java.util.Arrays;
 
 public class Task {
@@ -44,17 +46,20 @@ public class Task {
         try {
             ans.append("Метод Эйлера:\n");
 
-            EilerMethod eilerMethod = new EilerMethod(function, x, y0, h, eps);
-            eilerMethod.plotGraph(lineChart[0]);
-            ans.append(eilerMethod.getStringTable()).append('\n');
+            EilerMethod method = new EilerMethod(function, x, y0, h, eps);
+            method.plotGraph(lineChart[0]);
+            ans.append(method.getStringTable()).append('\n');
 
         } catch (Exception e) {
             ans.append("Не удалось решить ОДУ методом Эйлера\n");
-            ans.append(e.getMessage()).append('\n');
+            ans.append(Arrays.toString(e.getStackTrace())).append('\n');
         }
 
         try {
             ans.append("Метод Рунге-Кутта 4-го порядка:\n");
+            RungeKuttaMethod method = new RungeKuttaMethod(function, x, y0, h, eps);
+            method.plotGraph(lineChart[1]);
+            ans.append(method.getStringTable()).append('\n');
 
         } catch (Exception e) {
             ans.append("Не удалось решить ОДУ методом Рунге-Кутта 4-го порядка\n");
