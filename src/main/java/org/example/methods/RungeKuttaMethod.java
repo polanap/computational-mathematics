@@ -18,16 +18,6 @@ public class RungeKuttaMethod extends Method {
         calculate();
     }
 
-//    @Override
-//    public void calculate() {
-//        for (int i = 1; i < x.length; i++) {
-//            double k1 = h * function.derivative(x[i - 1], y[i - 1]);
-//            double k2 = h * function.derivative(x[i - 1] + h / 2, y[i - 1] + k1 / 2);
-//            double k3 = h * function.derivative(x[i - 1] + h / 2, y[i - 1] + k2 / 2);
-//            double k4 = h * function.derivative(x[i - 1] + h, y[i - 1] + k3);
-//            y[i] = y[i - 1] + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-//        }
-//    }
 
     @Override
     protected void calculate() {
@@ -43,7 +33,7 @@ public class RungeKuttaMethod extends Method {
             xh = makeXPoints(h / 2);
             yh = calculateWithFixH(h / 2, xh);
             errors = runge(y2h, yh);
-            h/=2;
+            h /= 2;
         } while (Arrays.stream(errors).max().getAsDouble() > eps && currentItteration < maxItteration);
         y = y2h;
         x = x2h;

@@ -12,9 +12,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.lang.Math.abs;
 
 public abstract class Method implements Graphical {
     Function function;
@@ -74,31 +71,6 @@ public abstract class Method implements Graphical {
         series0.getNode().setStyle("-fx-stroke: transparent;"); // Отключение линий
     }
 
-//    public String getStringTable() {
-//
-//        AsciiTable asciiTable = new AsciiTable();
-//        asciiTable.addRule();
-//        asciiTable.addRow(makeRow("i", IntStream.rangeClosed(0, count-1)
-//                .mapToDouble(it -> it)
-//                .toArray()));
-//        asciiTable.addRule();
-//        asciiTable.addRow(makeRow("xi", x));
-//        asciiTable.addRule();
-//        asciiTable.addRow(makeRow("yi", y));
-//        asciiTable.addRule();
-//        asciiTable.addRow(makeRow("f(xi,yi)", IntStream.rangeClosed(0, count-1)
-//                .mapToDouble(i->function.derivative(x[i], y[i]))
-//                .toArray()));
-//        asciiTable.addRule();
-//        asciiTable.addRow(makeRow("y(xi)", IntStream.rangeClosed(0, count-1)
-//                .mapToDouble(i->function.calculate(x[i], x[0], y[0]))
-//                .toArray()));
-//        asciiTable.addRule();
-//
-//        asciiTable.setTextAlignment(TextAlignment.CENTER);
-//        return asciiTable.render() + "\n";
-//
-//    }
 
     public String getStringTable() {
         DecimalFormat decimalFormat = new DecimalFormat("#.#####");

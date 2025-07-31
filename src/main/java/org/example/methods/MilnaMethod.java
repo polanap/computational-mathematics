@@ -16,7 +16,10 @@ public class MilnaMethod extends Method {
         x = makeXPoints(h);
         errors = new double[x.length];
         RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps); //todo: исправить -- если внутри метода шаг уменьшается -- результат неверный
-        y = rkm.y;
+        y = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            y[i] = rkm.y[i * ((rkm.x.length - 1) / (x.length - 1))];
+        }
         calculate();
         calcFirstErrors();
     }
@@ -38,7 +41,7 @@ public class MilnaMethod extends Method {
         }
     }
 
-    public void calcFirstErrors(){
+    public void calcFirstErrors() {
         for (int i = 1; i < min(x.length, 4); i++) {
             errors[i] = abs(function.calculate(x[i], x[0], y[0]) - y[i]);
         }
