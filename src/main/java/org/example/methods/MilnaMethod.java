@@ -6,8 +6,6 @@ import static java.lang.Math.abs;
 
 public class MilnaMethod extends Method {
 
-    int maxItteration = 10000;
-
     public MilnaMethod(Function function, double start, double end, double y0, double h, double eps) {
         this.start = start;
         this.end = end;
@@ -15,7 +13,7 @@ public class MilnaMethod extends Method {
         this.function = function;
         this.h = h;
         this.eps = eps;
-        makePoints();
+        x = makeXPoints(h);
         RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps);
         y = rkm.y;
         calculate();
@@ -23,7 +21,7 @@ public class MilnaMethod extends Method {
 
     @Override
     public void calculate() {
-        for (int i = 4; i < count; i++) {
+        for (int i = 4; i < x.length; i++) {
             double itterCount = 0;
             double yPredict;
             y[i] = y[i - 4] + 4 * h * (2 * f(i - 3) - f(i - 2) + 2 * f(i - 1)) / 3;

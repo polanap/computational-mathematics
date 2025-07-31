@@ -14,16 +14,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.lang.Math.abs;
+
 public abstract class Method implements Graphical {
     Function function;
     double[] x;
     double[] y;
     double h;
     double eps;
-    int count;
     double start;
     double end;
     double y0;
+    int maxItteration = 10000;
+    double[] errors;
+    int order = 1;
 
     final double overX = 0.3;
     Color graphColor;
@@ -55,7 +59,7 @@ public abstract class Method implements Graphical {
         // Серия для изначальных точек
         XYChart.Series<Number, Number> series0 = new XYChart.Series<>();
         series0.setName("Точки решения");
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < x.length; i++) {
             XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(x[i], y[i]);
             Circle point = new Circle(5);
             point.setFill(Color.BLUE);
@@ -101,14 +105,11 @@ public abstract class Method implements Graphical {
         AsciiTable asciiTable = new AsciiTable();
         asciiTable.addRule();
 
-        // Определяем количество строк в таблице
-        int count = x.length; // Предполагаем, что x и y имеют одинаковую длину
+        int count = x.length;
 
-        // Добавляем заголовки столбцов
         asciiTable.addRow("i", "xi", "yi", "f(xi,yi)", "y(xi)");
         asciiTable.addRule();
 
-        // Добавляем данные в таблицу
         for (int i = 0; i < count; i++) {
             asciiTable.addRow(
                     i,
@@ -140,14 +141,28 @@ public abstract class Method implements Graphical {
         }
     }
 
-    public void makePoints(){
-        count = (int) Math.floor((end - start) / h) + 1;
-        x = new double [count];
-        y = new double [count];
+    public double[] makeXPoints(double h) {
+        double[] xh;
+        int count = getCount(h);
+        xh = new double[count];
         for (int i = 0; i < count; i++) {
-            x[i] = start + i * h;
+            xh[i] = start + i * h;
         }
+        return xh;
     }
 
+    public double[] runge(double[] y2h, double[] yh) {
+        double[] errors = new double[yh.length];
+        for (int i = 0; i < y2h.length; i++) {
+            int idxH2 = i * 2;
+            double err = Math.abs(yh[idxH2] - y2h[i]) / (Math.pow(2, order) - 1);
+            errors[idxH2] = err;
+        }
+        return errors;
+    }
+
+    public int getCount(double h) {
+        return (int) Math.floor((end - start) / h) + 1;
+    }
 
 }
