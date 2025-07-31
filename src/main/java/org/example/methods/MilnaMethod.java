@@ -8,14 +8,15 @@ public class MilnaMethod extends Method {
 
     int maxItteration = 10000;
 
-    public MilnaMethod(Function function, double[] x, double y0, double h, double eps) {
-        this.x = x;
-        count = x.length;
+    public MilnaMethod(Function function, double start, double end, double y0, double h, double eps) {
+        this.start = start;
+        this.end = end;
+        this.y0 = y0;
         this.function = function;
         this.h = h;
         this.eps = eps;
-
-        RungeKuttaMethod rkm = new RungeKuttaMethod(function, x, y0, h, eps);
+        makePoints();
+        RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps);
         y = rkm.y;
         calculate();
     }

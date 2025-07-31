@@ -30,13 +30,8 @@ public class Task {
         this.h = h;
         this.eps = eps;
         this.y0 = y0;
-        count = (int) Math.floor((end - start) / h) + 1;
         for (int i = 0; i < 3; i++) {
             lineChart[i] = new LineChart<>(new NumberAxis(), new NumberAxis());
-        }
-        x = new double [count];
-        for (int i = 0; i < count; i++) {
-            x[i] = start + i * h;
         }
     }
 
@@ -47,7 +42,7 @@ public class Task {
         try {
             ans.append("Метод Эйлера:\n");
 
-            EilerMethod method = new EilerMethod(function, x, y0, h, eps);
+            EilerMethod method = new EilerMethod(function, start, end, y0, h, eps);
             method.plotGraph(lineChart[0]);
             ans.append(method.getStringTable()).append('\n');
 
@@ -58,7 +53,7 @@ public class Task {
 
         try {
             ans.append("Метод Рунге-Кутта 4-го порядка:\n");
-            RungeKuttaMethod method = new RungeKuttaMethod(function, x, y0, h, eps);
+            RungeKuttaMethod method = new RungeKuttaMethod(function, start, end, y0, h, eps);
             method.plotGraph(lineChart[1]);
             ans.append(method.getStringTable()).append('\n');
 
@@ -69,7 +64,7 @@ public class Task {
 
         try {
             ans.append("Метод Милна:\n");
-            MilnaMethod method = new MilnaMethod(function, x, y0, h, eps);
+            MilnaMethod method = new MilnaMethod(function, start, end, y0, h, eps);
             method.plotGraph(lineChart[2]);
             ans.append(method.getStringTable()).append('\n');
 

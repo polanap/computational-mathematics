@@ -21,6 +21,9 @@ public abstract class Method implements Graphical {
     double h;
     double eps;
     int count;
+    double start;
+    double end;
+    double y0;
 
     final double overX = 0.3;
     Color graphColor;
@@ -67,35 +70,63 @@ public abstract class Method implements Graphical {
         series0.getNode().setStyle("-fx-stroke: transparent;"); // Отключение линий
     }
 
-    public String getStringTable() {
+//    public String getStringTable() {
+//
+//        AsciiTable asciiTable = new AsciiTable();
+//        asciiTable.addRule();
+//        asciiTable.addRow(makeRow("i", IntStream.rangeClosed(0, count-1)
+//                .mapToDouble(it -> it)
+//                .toArray()));
+//        asciiTable.addRule();
+//        asciiTable.addRow(makeRow("xi", x));
+//        asciiTable.addRule();
+//        asciiTable.addRow(makeRow("yi", y));
+//        asciiTable.addRule();
+//        asciiTable.addRow(makeRow("f(xi,yi)", IntStream.rangeClosed(0, count-1)
+//                .mapToDouble(i->function.derivative(x[i], y[i]))
+//                .toArray()));
+//        asciiTable.addRule();
+//        asciiTable.addRow(makeRow("y(xi)", IntStream.rangeClosed(0, count-1)
+//                .mapToDouble(i->function.calculate(x[i], x[0], y[0]))
+//                .toArray()));
+//        asciiTable.addRule();
+//
+//        asciiTable.setTextAlignment(TextAlignment.CENTER);
+//        return asciiTable.render() + "\n";
+//
+//    }
 
+    public String getStringTable() {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
         AsciiTable asciiTable = new AsciiTable();
         asciiTable.addRule();
-        asciiTable.addRow(makeRow("i", IntStream.rangeClosed(0, count-1)
-                .mapToDouble(it -> it)
-                .toArray()));
+
+        // Определяем количество строк в таблице
+        int count = x.length; // Предполагаем, что x и y имеют одинаковую длину
+
+        // Добавляем заголовки столбцов
+        asciiTable.addRow("i", "xi", "yi", "f(xi,yi)", "y(xi)");
         asciiTable.addRule();
-        asciiTable.addRow(makeRow("xi", x));
-        asciiTable.addRule();
-        asciiTable.addRow(makeRow("yi", y));
-        asciiTable.addRule();
-        asciiTable.addRow(makeRow("f(xi,yi)", IntStream.rangeClosed(0, count-1)
-                .mapToDouble(i->function.derivative(x[i], y[i]))
-                .toArray()));
-        asciiTable.addRule();
-        asciiTable.addRow(makeRow("y(xi)", IntStream.rangeClosed(0, count-1)
-                .mapToDouble(i->function.calculate(x[i], x[0], y[0]))
-                .toArray()));
-        asciiTable.addRule();
+
+        // Добавляем данные в таблицу
+        for (int i = 0; i < count; i++) {
+            asciiTable.addRow(
+                    i,
+                    decimalFormat.format(x[i]),
+                    decimalFormat.format(y[i]),
+                    decimalFormat.format(function.derivative(x[i], y[i])),
+                    decimalFormat.format(function.calculate(x[i], x[0], y[0]))
+            );
+            asciiTable.addRule();
+        }
 
         asciiTable.setTextAlignment(TextAlignment.CENTER);
         return asciiTable.render() + "\n";
-
     }
 
 
     public static List<Object> makeRow(String title, double[] array) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
         if (array == null) {
             return new ArrayList<>(0);
         } else {
@@ -108,5 +139,15 @@ public abstract class Method implements Graphical {
             return list;
         }
     }
+
+    public void makePoints(){
+        count = (int) Math.floor((end - start) / h) + 1;
+        x = new double [count];
+        y = new double [count];
+        for (int i = 0; i < count; i++) {
+            x[i] = start + i * h;
+        }
+    }
+
 
 }

@@ -4,14 +4,14 @@ import org.example.functions.Function;
 
 public class RungeKuttaMethod extends Method {
 
-    public RungeKuttaMethod(Function function, double[] x, double y0, double h, double eps) {
-        this.x = x;
-        count = x.length;
-        y = new double[count];
-        y[0] = y0;
+    public RungeKuttaMethod(Function function, double start, double end, double y0, double h, double eps) {
+        this.start = start;
+        this.end = end;
+        this.y0 = y0;
         this.function = function;
         this.h = h;
         this.eps = eps;
+        makePoints();
         calculate();
     }
 
