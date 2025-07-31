@@ -19,8 +19,8 @@ public enum Function implements FunctionInterface {
 
         @Override
         public double calculate(double x, double x0, double y0) {
-//            double c = y0 / (exp(x0) * (y0 * x0 + y0 + 1));
-            return (2*exp(x0)* y0-exp(x0)* sin(x0)+exp(x0)* cos(x0)) / (2*exp(x)) + (sin(x)) / 2 - (cos(x)) / 2;
+            double c = (2*exp(x0)* y0-exp(x0)* sin(x0)+exp(x0)* cos(x0));
+            return c / (2*exp(x)) + (sin(x)) / 2 - (cos(x)) / 2;
         }
 
     },
@@ -32,8 +32,8 @@ public enum Function implements FunctionInterface {
 
         @Override
         public double calculate(double x, double x0, double y0) {
-//            double c = y0 / (x0 * x0 + 1);
-            return  y0 - exp(x0) + exp(x);
+            double c = y0 - exp(x0);
+            return  c + exp(x);
         }
 
         @Override
