@@ -3,42 +3,42 @@ package org.example.functions;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.Math.exp;
+import static java.lang.Math.*;
 
 public enum Function implements FunctionInterface {
     FUNCTION_1 {
         @Override
         public String toString() {
-            return "y' = y + (1 + x)y^2";
+            return "y' = sin(x) - y";
         }
 
         @Override
         public double derivative(double x, double y) {
-            return y + (1 + x) * y * y;
+            return sin(x) - y;
         }
 
         @Override
         public double calculate(double x, double x0, double y0) {
-            double c = y0 / (exp(x0) * (y0 * x0 + y0 + 1));
-            return (c * exp(x)) / (1 - c * exp(x) * (1 + x));
+//            double c = y0 / (exp(x0) * (y0 * x0 + y0 + 1));
+            return (2*exp(x0)* y0-exp(x0)* sin(x0)+exp(x0)* cos(x0)) / (2*exp(x)) + (sin(x)) / 2 - (cos(x)) / 2;
         }
 
     },
     FUNCTION_2 {
         @Override
         public String toString() {
-            return "y' = 2xy / (x^2 + 1)";
+            return "y' = e^x";
         }
 
         @Override
         public double calculate(double x, double x0, double y0) {
-            double c = y0 / (x0 * x0 + 1);
-            return c * (x * x + 1);
+//            double c = y0 / (x0 * x0 + 1);
+            return  y0 - exp(x0) + exp(x);
         }
 
         @Override
         public double derivative(double x, double y) {
-            return 2 * x * y / (x * x + 1);
+            return exp(x);
         }
     },
     FUNCTION_3 {
