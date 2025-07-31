@@ -25,7 +25,7 @@ public abstract class Method implements Graphical {
     double start;
     double end;
     double y0;
-    int maxItteration = 10000;
+    int maxItteration = 1000;
     double[] errors;
     int order = 1;
 
@@ -107,7 +107,7 @@ public abstract class Method implements Graphical {
 
         int count = x.length;
 
-        asciiTable.addRow("i", "xi", "yi", "f(xi,yi)", "y(xi)");
+        asciiTable.addRow("i", "xi", "yi", "f(xi,yi)", "y(xi)", "error[i]");
         asciiTable.addRule();
 
         for (int i = 0; i < count; i++) {
@@ -116,7 +116,8 @@ public abstract class Method implements Graphical {
                     decimalFormat.format(x[i]),
                     decimalFormat.format(y[i]),
                     decimalFormat.format(function.derivative(x[i], y[i])),
-                    decimalFormat.format(function.calculate(x[i], x[0], y[0]))
+                    decimalFormat.format(function.calculate(x[i], x[0], y[0])),
+                    decimalFormat.format(errors[i])
             );
             asciiTable.addRule();
         }
@@ -152,11 +153,11 @@ public abstract class Method implements Graphical {
     }
 
     public double[] runge(double[] y2h, double[] yh) {
-        double[] errors = new double[yh.length];
+        double[] errors = new double[y2h.length];
         for (int i = 0; i < y2h.length; i++) {
-            int idxH2 = i * 2;
-            double err = Math.abs(yh[idxH2] - y2h[i]) / (Math.pow(2, order) - 1);
-            errors[idxH2] = err;
+            int idxH = i * 2;
+            double err = Math.abs(yh[idxH] - y2h[i]) / (Math.pow(2, order) - 1);
+            errors[i] = err;
         }
         return errors;
     }

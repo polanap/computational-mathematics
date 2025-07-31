@@ -14,6 +14,7 @@ public class MilnaMethod extends Method {
         this.h = h;
         this.eps = eps;
         x = makeXPoints(h);
+        errors = new double[x.length];
         RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps);
         y = rkm.y;
         calculate();
@@ -30,7 +31,8 @@ public class MilnaMethod extends Method {
                 double fPredict = function.derivative(x[i], yPredict);
                 y[i] = y[i - 2] + h * (f(i - 2) + 4 * f(i - 1) + fPredict) / 3;
                 itterCount++;
-            } while (abs(y[i] - yPredict) > eps && itterCount < maxItteration);
+                errors[i] = abs(function.calculate(x[i], x[0], y[0]) - yPredict);
+            } while (errors[i] > eps && itterCount < maxItteration);
 
         }
     }
