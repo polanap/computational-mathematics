@@ -6,7 +6,7 @@ import static java.lang.Math.*;
 
 public class MilnaMethod extends Method {
 
-    public MilnaMethod(Function function, double start, double end, double y0, double h, double eps) {
+    public MilnaMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {
         this.start = start;
         this.end = end;
         this.y0 = y0;

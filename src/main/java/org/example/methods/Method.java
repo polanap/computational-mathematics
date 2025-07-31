@@ -25,12 +25,13 @@ public abstract class Method implements Graphical {
     double currentH;
 
     int MAX_ITTERATIONS = 1000;
+    int MAX_POINTS_COUNT = 100;
     int ORDER = 1;
 
     final double overX = 0.3;
     Color graphColor;
 
-    protected abstract void calculate();
+    protected abstract void calculate() throws Exception;
 
     @Override
     public void plotGraph(LineChart<Number, Number> lineChart) {
@@ -100,9 +101,10 @@ public abstract class Method implements Graphical {
     }
 
 
-    public double[] makeXPoints(double h) {
+    public double[] makeXPoints(double h) throws Exception {
         double[] xh;
         int count = getCount(h);
+        if (count > MAX_POINTS_COUNT) throw new Exception("Количество точек на отрезне не может быть больше " + MAX_POINTS_COUNT);
         xh = new double[count];
         for (int i = 0; i < count; i++) {
             xh[i] = start + i * h;

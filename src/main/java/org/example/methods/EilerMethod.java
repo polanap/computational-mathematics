@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class EilerMethod extends Method {
 
-    public EilerMethod(Function function, double start, double end, double y0, double h, double eps) {
+    public EilerMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {
         this.start = start;
         this.end = end;
         this.y0 = y0;
@@ -19,7 +19,7 @@ public class EilerMethod extends Method {
     }
 
     @Override
-    protected void calculate() {
+    protected void calculate() throws Exception {
         int currentItteration = 0;
         double[] y2h;
         double[] yh;

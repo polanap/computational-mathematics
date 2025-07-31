@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class RungeKuttaMethod extends Method {
 
-    public RungeKuttaMethod(Function function, double start, double end, double y0, double h, double eps) {
+    public RungeKuttaMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {
         this.start = start;
         this.end = end;
         this.y0 = y0;
@@ -22,7 +22,7 @@ public class RungeKuttaMethod extends Method {
 
 
     @Override
-    protected void calculate() {
+    protected void calculate() throws Exception {
         int currentItteration = 0;
         double[] y2h;
         double[] yh;
