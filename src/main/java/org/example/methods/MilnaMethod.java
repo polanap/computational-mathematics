@@ -2,7 +2,7 @@ package org.example.methods;
 
 import org.example.functions.Function;
 
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 public class MilnaMethod extends Method {
 
@@ -15,9 +15,10 @@ public class MilnaMethod extends Method {
         this.eps = eps;
         x = makeXPoints(h);
         errors = new double[x.length];
-        RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps);
+        RungeKuttaMethod rkm = new RungeKuttaMethod(function, start, end, y0, h, eps); //todo: исправить -- если внутри метода шаг уменьшается -- результат неверный
         y = rkm.y;
         calculate();
+        calcFirstErrors();
     }
 
     @Override
@@ -31,9 +32,15 @@ public class MilnaMethod extends Method {
                 double fPredict = function.derivative(x[i], yPredict);
                 y[i] = y[i - 2] + h * (f(i - 2) + 4 * f(i - 1) + fPredict) / 3;
                 itterCount++;
-                errors[i] = abs(function.calculate(x[i], x[0], y[0]) - yPredict);
+                errors[i] = abs(function.calculate(x[i], x[0], y[0]) - y[i]);
             } while (errors[i] > eps && itterCount < maxItteration);
 
+        }
+    }
+
+    public void calcFirstErrors(){
+        for (int i = 1; i < min(x.length, 4); i++) {
+            errors[i] = abs(function.calculate(x[i], x[0], y[0]) - y[i]);
         }
     }
 
