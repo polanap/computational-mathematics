@@ -4,6 +4,9 @@ import org.example.functions.Function;
 
 import static java.lang.Math.*;
 
+/**
+ * Метод Милна
+ */
 public class MilnaMethod extends Method {
 
     public MilnaMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {

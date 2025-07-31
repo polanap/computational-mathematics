@@ -4,6 +4,9 @@ import org.example.functions.Function;
 
 import java.util.Arrays;
 
+/**
+ * Метод Эйлера
+ */
 public class EilerMethod extends Method {
 
     public EilerMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {

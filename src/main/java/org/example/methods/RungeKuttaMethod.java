@@ -4,6 +4,9 @@ import org.example.functions.Function;
 
 import java.util.Arrays;
 
+/**
+ * Метод Рунге-Кутта (4 порядка)
+ */
 public class RungeKuttaMethod extends Method {
 
     public RungeKuttaMethod(Function function, double start, double end, double y0, double h, double eps) throws Exception {
