@@ -12,6 +12,7 @@ public class MilnaMethod extends Method {
         this.y0 = y0;
         this.function = function;
         this.h = h;
+        this.currentH = h;
         this.eps = eps;
         x = makeXPoints(h);
         errors = new double[x.length];
@@ -22,6 +23,7 @@ public class MilnaMethod extends Method {
         }
         calculate();
         calcFirstErrors();
+        normalise();
     }
 
     @Override
@@ -36,7 +38,7 @@ public class MilnaMethod extends Method {
                 y[i] = y[i - 2] + h * (f(i - 2) + 4 * f(i - 1) + fPredict) / 3;
                 itterCount++;
                 errors[i] = abs(function.calculate(x[i], x[0], y[0]) - y[i]);
-            } while (errors[i] > eps && itterCount < maxItteration);
+            } while (errors[i] > eps && itterCount < MAX_ITTERATIONS);
 
         }
     }

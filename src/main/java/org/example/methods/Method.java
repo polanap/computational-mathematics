@@ -9,22 +9,23 @@ import javafx.scene.shape.Circle;
 import org.example.functions.Function;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public abstract class Method implements Graphical {
     Function function;
     double[] x;
     double[] y;
-    double h;
+    double[] errors;
     double eps;
     double start;
     double end;
     double y0;
-    int maxItteration = 1000;
-    double[] errors;
-    int order = 1;
+
+    double h;
+    double currentH;
+
+    int MAX_ITTERATIONS = 1000;
+    int ORDER = 1;
 
     final double overX = 0.3;
     Color graphColor;
@@ -99,21 +100,6 @@ public abstract class Method implements Graphical {
     }
 
 
-    public static List<Object> makeRow(String title, double[] array) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#####");
-        if (array == null) {
-            return new ArrayList<>(0);
-        } else {
-            int size = array.length;
-            List<Object> list = new ArrayList<>(size);
-            list.add(title);
-            for (int k = 0; k < size; k++) {
-                list.add(decimalFormat.format(array[k]));
-            }
-            return list;
-        }
-    }
-
     public double[] makeXPoints(double h) {
         double[] xh;
         int count = getCount(h);
@@ -128,7 +114,7 @@ public abstract class Method implements Graphical {
         double[] errors = new double[y2h.length];
         for (int i = 0; i < y2h.length; i++) {
             int idxH = i * 2;
-            double err = Math.abs(yh[idxH] - y2h[i]) / (Math.pow(2, order) - 1);
+            double err = Math.abs(yh[idxH] - y2h[i]) / (Math.pow(2, ORDER) - 1);
             errors[i] = err;
         }
         return errors;
@@ -136,6 +122,25 @@ public abstract class Method implements Graphical {
 
     public int getCount(double h) {
         return (int) Math.floor((end - start) / h) + 1;
+    }
+
+    public int getHCoeff() {
+        return getCount(h) / getCount(currentH);
+    }
+
+    public void normalise() {
+        double[] normY = new double[getCount(h)];
+        double[] normX = new double[getCount(h)];
+        double[] normErr = new double[getCount(h)];
+
+        for (int i = 0; i < getCount(h); i++) {
+            normY[i] = y[(int) (i * (h/currentH))];
+            normX[i] = x[(int) (i * (h/currentH))];
+            normErr[i] = errors[(int) (i * (h/currentH))];
+        }
+        y = normY;
+        x = normX;
+        errors = normErr;
     }
 
 }

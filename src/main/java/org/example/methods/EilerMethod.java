@@ -12,8 +12,10 @@ public class EilerMethod extends Method {
         this.y0 = y0;
         this.function = function;
         this.h = h;
+        this.currentH = h;
         this.eps = eps;
         calculate();
+        normalise();
     }
 
     @Override
@@ -25,13 +27,14 @@ public class EilerMethod extends Method {
         double[] xh;
         do {
             currentItteration++;
-            x2h = makeXPoints(h);
-            y2h = calculateWithFixH(h, x2h);
-            xh = makeXPoints(h / 2);
-            yh = calculateWithFixH(h / 2, xh);
+            x2h = makeXPoints(currentH);
+            y2h = calculateWithFixH(currentH, x2h);
+            xh = makeXPoints(currentH / 2);
+            yh = calculateWithFixH(currentH / 2, xh);
             errors = runge(y2h, yh);
-            h/=2;
-        } while (Arrays.stream(errors).max().getAsDouble() > eps && currentItteration < maxItteration);
+            currentH /=2;
+        } while (Arrays.stream(errors).max().getAsDouble() > eps && currentItteration < MAX_ITTERATIONS);
+        currentH *= 2;
         y = y2h;
         x = x2h;
     }

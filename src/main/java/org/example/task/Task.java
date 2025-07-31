@@ -18,8 +18,6 @@ public class Task {
     double h;
     double eps;
     double y0;
-    int count;
-    double [] x;
     LineChart<Number, Number>[] lineChart = new LineChart[3];
 
 
