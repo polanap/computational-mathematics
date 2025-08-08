@@ -48,7 +48,7 @@ public class RungeKuttaMethod extends Method {
     protected double[] calculateWithFixH(double h, double[] x) {
         int count = getCount(h);
         double[] y = new double[count];
-        for (int i = 1; i < x.length; i++) {
+        for (int i = 1; i < count; i++) {
             double k1 = h * function.derivative(x[i - 1], y[i - 1]);
             double k2 = h * function.derivative(x[i - 1] + h / 2, y[i - 1] + k1 / 2);
             double k3 = h * function.derivative(x[i - 1] + h / 2, y[i - 1] + k2 / 2);

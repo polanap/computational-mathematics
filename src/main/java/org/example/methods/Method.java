@@ -104,7 +104,7 @@ public abstract class Method implements Graphical {
     public double[] makeXPoints(double h) throws Exception {
         double[] xh;
         int count = getCount(h);
-        if (count > MAX_POINTS_COUNT) throw new Exception("Количество точек на отрезне не может быть больше " + MAX_POINTS_COUNT);
+        if (count > MAX_POINTS_COUNT) throw new Exception("Количество точек на отрезке не может быть больше " + MAX_POINTS_COUNT);
         xh = new double[count];
         for (int i = 0; i < count; i++) {
             xh[i] = start + i * h;
@@ -116,8 +116,7 @@ public abstract class Method implements Graphical {
         double[] errors = new double[y2h.length];
         for (int i = 0; i < y2h.length; i++) {
             int idxH = i * 2;
-            double err = Math.abs(yh[idxH] - y2h[i]) / (Math.pow(2, ORDER) - 1);
-            errors[i] = err;
+            errors[i] = Math.abs(yh[idxH] - y2h[i]) / (Math.pow(2, ORDER) - 1);
         }
         return errors;
     }
